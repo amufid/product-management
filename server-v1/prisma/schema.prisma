@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id        Int      @id @default(autoincrement())
+  username  String
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+model Products {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  sku         String        @unique
+  price       Int
+  photo       String?
+  quantity    Int
+  categoryId  Int
+  category    Categories    @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Transaction Transaction[]
+  Inventory   Inventory[]
+}
+
+model Categories {
+  id        Int        @id @default(autoincrement())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Products  Products[]
+}
+
+model Warehouse {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id                     Int                      @id @default(autoincrement())
+  productId              Int
+  product                Products                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity               Int
+  type                   Type
+  totalPrice             Int
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  TransactionDestination TransactionDestination[]
+}
+
+enum Type {
+  IN
+  OUT
+}
+
+model Location {
+  id          Int         @id @default(autoincrement())
+  code        String      @unique
+  description String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Inventory   Inventory[]
+}
+
+model Inventory {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  product    Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  locationId Int
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  quantity   Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Destination {
+  id                     Int                      @id @default(autoincrement())
+  name                   String
+  address                String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  TransactionDestination TransactionDestination[]
+}
+
+model TransactionDestination {
+  id            Int         @id @default(autoincrement())
+  transactionId Int
+  destinationId Int
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
