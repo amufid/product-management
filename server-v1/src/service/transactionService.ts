@@ -96,6 +96,9 @@ export class TransactionService {
                   destination: true
                }
             }
+         },
+         orderBy: {
+            createdAt: 'desc'
          }
       })
 

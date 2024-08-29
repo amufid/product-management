@@ -96,7 +96,7 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
                         {items.map((item) => (
                            <div key={item.id}>
                               <Link href={item.route} >
-                                 <li className="w-full flex items-center p-2 bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 mb-1">
+                                 <li className="w-full flex items-center py-3 px-5 bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 mb-1 rounded-sm">
                                     {item.icon}
                                     <span className="ml-3">{item.title}</span>
                                  </li>

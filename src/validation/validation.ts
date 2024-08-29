@@ -30,3 +30,13 @@ export const formSchemaUpdateTransaction = z.object({
    type: z.string().min(1, 'Harus pilih salah satu tipe'),
 })
 
+export const formSchemaLocation = z.object({
+   code: z.string().min(1, 'Kode minimal 1'),
+   description: z.string().min(3, 'Deskripsi minimal 1')
+})
+
+export const formSchemaInventory = z.object({
+   productId: z.number().min(1, 'Produk tidak boleh kosong'),
+   locationId: z.number().min(1, 'Lokasi tidak boleh kosong'),
+   quantity: z.number().min(1, 'Jumlah minimal 1'),
+})

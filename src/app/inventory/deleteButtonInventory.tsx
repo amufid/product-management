@@ -12,7 +12,7 @@ import {
    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import instanceClient from "@/lib/instanceClient"
+import { accessToken, baseURL } from "@/lib/accessToken"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 
@@ -20,12 +20,17 @@ interface Id {
    id: number;
 }
 
-export default function DeleteProduct({ id }: Id) {
+export default function ModalDeleteCategory({ id }: Id) {
    const router = useRouter()
    const handleDelete = async () => {
       try {
-         const response = await instanceClient.delete(`/products/${id}`)
-         toast.success('Produk berhasil dihapus')
+         await fetch(`${baseURL}/inventory/${id}`, {
+            method: 'DELETE',
+            headers: {
+               'Authorization': `Bearer ${accessToken}`
+            }
+         })
+         toast.success('Inventaris berhasil dihapus')
          router.refresh()
       } catch (error) {
          console.log(error)
@@ -39,7 +44,7 @@ export default function DeleteProduct({ id }: Id) {
          </AlertDialogTrigger>
          <AlertDialogContent className="max-w-sm">
             <AlertDialogHeader>
-               <AlertDialogTitle>Apakah anda yakin hapus produk?</AlertDialogTitle>
+               <AlertDialogTitle>Apakah anda yakin hapus inventaris?</AlertDialogTitle>
                <AlertDialogDescription>
                </AlertDialogDescription>
             </AlertDialogHeader>
