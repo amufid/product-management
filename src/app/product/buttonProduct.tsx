@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useStore } from "@/store/store";
-import { Product } from "./page";
+import { Product } from "@/model/models";
 
 export function ButtonAddProduct() {
    return (

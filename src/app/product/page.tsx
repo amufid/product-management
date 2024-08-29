@@ -1,9 +1,7 @@
 import {
    Table,
    TableBody,
-   TableCaption,
    TableCell,
-   TableFooter,
    TableHead,
    TableHeader,
    TableRow,
@@ -16,7 +14,7 @@ import SearchProduct from "./searchProduct";
 import { baseURL } from "@/lib/accessToken";
 import PaginationProduct from "./paginationProduct";
 import { ButtonAddProduct, ButtonEditProduct } from "./buttonProduct";
-import { DataProduct, Product } from "@/model/models";
+import { DataProduct } from "@/model/models";
 
 const accessToken = cookies().get('accessToken')?.value;
 
@@ -60,14 +58,13 @@ export default async function ProductPage({ searchParams }: any) {
    const pages = result.paging
 
    return (
-      <div className="min-h-auto px-5">
+      <div className="min-h-screen px-5">
          <h1 className="text-xl font-semibold py-5">Daftar Produk</h1>
          <div className="flex justify-between items-center mb-2">
             <ButtonAddProduct />
             <SearchProduct />
          </div>
          <Table>
-            {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
                <TableRow>
                   <TableHead>Nama</TableHead>
@@ -99,12 +96,6 @@ export default async function ProductPage({ searchParams }: any) {
                   </TableRow>
                ))}
             </TableBody>
-            {/* <TableFooter>
-               <TableRow>
-                  <TableCell colSpan={4}>Total</TableCell>
-                  <TableCell className="text-right">$2,500.00</TableCell>
-               </TableRow>
-            </TableFooter> */}
          </Table>
          <PaginationProduct pages={pages} />
       </div>

@@ -88,6 +88,9 @@ class TransactionService {
                             destination: true
                         }
                     }
+                },
+                orderBy: {
+                    createdAt: 'desc'
                 }
             });
             return {

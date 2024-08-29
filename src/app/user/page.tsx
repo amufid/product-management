@@ -37,7 +37,7 @@ export default async function UserPage() {
                   <TableHead>Nama</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
-                  <TableHead>Aksi</TableHead>
+                  {/* <TableHead>Aksi</TableHead> */}
                </TableRow>
             </TableHeader>
             <TableBody>

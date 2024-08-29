@@ -46,7 +46,7 @@ export default async function TransactionPage() {
    const [transactions, products] = await Promise.all([transactionsData, productsData])
 
    return (
-      <div className="min-h-screen w-full px-5">
+      <div className="min-h-screen w-full px-5 pb-5">
          <h1 className="text-xl font-semibold py-5">Daftar Transaksi</h1>
          <div className="flex justify-between items-center mb-2">
             <ButtonAddTransaction />

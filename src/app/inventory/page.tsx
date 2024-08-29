@@ -10,6 +10,12 @@ import { baseURL } from "@/lib/accessToken"
 import convertDate from "@/lib/convertDate";
 import { Inventory, Location, Product } from "@/model/models";
 import { cookies } from "next/headers"
+import {
+   ButtonAddLocation,
+   ButtonAddInventory,
+   ButtonEditInventory
+} from "./buttonInventory";
+import DeleteButtonInventory from './deleteButtonInventory'
 
 const accessToken = cookies().get('accessToken')?.value;
 
@@ -63,15 +69,17 @@ export default async function InventoryPage() {
    return (
       <div className="min-h-screen w-full px-5">
          <h1 className="text-xl font-semibold py-5">Daftar Inventaris</h1>
-         <div className="flex justify-between items-center mb-2">
-            {/* <ButtonAddTransaction /> */}
+         <div className="flex items-center mb-2 gap-x-2">
+            <ButtonAddLocation />
+            <ButtonAddInventory />
          </div>
          <Table>
             <TableHeader>
                <TableRow>
                   <TableHead>Nama produk</TableHead>
-                  <TableHead>Location</TableHead>
                   <TableHead>Jumlah</TableHead>
+                  <TableHead>Kode lokasi</TableHead>
+                  <TableHead>Deskripsi</TableHead>
                   <TableHead>Tanggal tersimpan</TableHead>
                   <TableHead>Aksi</TableHead>
                </TableRow>
@@ -82,14 +90,18 @@ export default async function InventoryPage() {
                      <TableCell>
                         {products.find((product: Product) => product.id === inventory.productId)?.name}
                      </TableCell>
+                     <TableCell>{inventory.quantity}</TableCell>
                      <TableCell>
                         {locations.find((location: Location) => location.id === inventory.locationId)?.code}
                      </TableCell>
-                     <TableCell>{inventory.quantity}</TableCell>
+                     <TableCell>
+                        {locations.find((location: Location) => location.id === inventory.locationId)?.description}
+                     </TableCell>
                      <TableCell>{convertDate(inventory.createdAt)}</TableCell>
                      <TableCell>
                         <div className="flex flex-row gap-x-2">
-                           {/* <ButtonEditTransaction {...transaction} /> */}
+                           <ButtonEditInventory {...inventory} />
+                           <DeleteButtonInventory {...inventory} />
                         </div>
                      </TableCell>
                   </TableRow>
