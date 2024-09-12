@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@radix-ui/react-dropdown-menu"
 import { accessToken, baseURL } from "@/lib/accessToken"
-import { SkeletonCard } from "@/components/skeleton"
 import { formSchemaProduct } from "@/validation/validation"
 import { Category } from "@/model/models"
 import Image from "next/image"
@@ -26,7 +25,6 @@ import MoonLoader from "react-spinners/MoonLoader";
 
 const uploadImage = async (formData: FormData) => {
    try {
-      console.log(formData)
       const response = await fetch(`${baseURL}/products/uploadImage`, {
          method: 'POST',
          headers: {
@@ -43,24 +41,26 @@ const uploadImage = async (formData: FormData) => {
 
 export default function UpdateProduct() {
    const [categories, setCategories] = useState<Category[]>([])
-   const [name, setName] = useState('')
-   const [price, setPrice] = useState('')
-   const [quantity, setQuantity] = useState('')
-   const [sku, setSku] = useState('')
-   const [photo, setPhoto] = useState('')
+   const [getCategoryId, setCategoryId] = useState(0)
    const [image, setImage] = useState<File | null>(null)
-   const [description, setDescription] = useState('')
-   const [categoryId, setCategoryId] = useState(0)
    const [categoryName, setCategoryName] = useState<undefined | string>('')
    const [errors, setErrors] = useState<Record<string, string>>({})
-   const [loadingSubmit, setLoadingSubmit] = useState(false)
    const [loading, setLoading] = useState(false)
+   const [product, setProduct] = useState({
+      name: '',
+      price: 0,
+      quantity: 0,
+      sku: '',
+      photo: '',
+      categoryId: 0,
+      description: ''
+   })
+
    const router = useRouter()
    const { id } = useParams()
 
    useEffect(() => {
       const fetchAllData = async () => {
-         setLoading(true)
          try {
             const [productResponse, categoriesResponse] = await Promise.all([
                fetch(`${baseURL}/products/${id}`, {
@@ -78,18 +78,19 @@ export default function UpdateProduct() {
             const productData = await productResponse.json()
             const categoriesData = await categoriesResponse.json()
 
-            setName(productData.data.name)
-            setPrice(productData.data.price)
-            setQuantity(productData.data.quantity)
-            setSku(productData.data.sku)
-            setPhoto(productData.data.photo)
+            setProduct({
+               ...product,
+               name: productData.data.name,
+               price: productData.data.price,
+               quantity: productData.data.quantity,
+               sku: productData.data.sku,
+               photo: productData.data.photo,
+               description: productData.data.description,
+            })
             setCategoryId(productData.data.categoryId)
-            setDescription(productData.data.description)
             setCategories(categoriesData.data)
          } catch (error) {
-            console.log(error)
-         } finally {
-            setLoading(false)
+            toast.error(`${error}`)
          }
       }
       fetchAllData()
@@ -97,7 +98,7 @@ export default function UpdateProduct() {
 
    useEffect(() => {
       const getCategory = async () => {
-         const response = await fetch(`${baseURL}/categories/${categoryId}`, {
+         const response = await fetch(`${baseURL}/categories/${getCategoryId}`, {
             headers: {
                'Authorization': `Bearer ${accessToken}`
             }
@@ -106,11 +107,11 @@ export default function UpdateProduct() {
          setCategoryName(data?.name)
       }
       getCategory()
-   }, [categoryId])
+   }, [getCategoryId])
 
    useEffect(() => {
       const handleCategory = () => {
-         const data = categories.find(index => Number(index.id) === categoryId)
+         const data = categories.find(index => Number(index.id) === getCategoryId)
          setCategoryName(data?.name)
       }
       handleCategory()
@@ -118,22 +119,15 @@ export default function UpdateProduct() {
 
    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
-      setLoadingSubmit(true)
-
+      setLoading(true)
       const formData = new FormData();
+
       if (image) {
          formData.append('photo', image);
       }
 
-      let data = {
-         name,
-         price,
-         quantity,
-         sku,
-         photo,
-         description,
-         categoryId
-      }
+      let data = product
+      data = { ...data, categoryId: getCategoryId }
 
       try {
          formSchemaProduct.parse(data);
@@ -143,7 +137,7 @@ export default function UpdateProduct() {
             data = { ...data, photo: imageUrl }
          }
 
-         await fetch(`${baseURL}/products/${id}`, {
+         const res = await fetch(`${baseURL}/products/${id}`, {
             method: 'PUT',
             headers: {
                'Content-Type': 'application/json',
@@ -152,9 +146,13 @@ export default function UpdateProduct() {
             body: JSON.stringify(data)
          })
 
-         toast.success('Product updated successful')
-         router.push('/product')
-         router.refresh()
+         if (res.status === 200) {
+            toast.success('Product updated successful')
+            router.push('/product')
+            router.refresh()
+         } else {
+            toast.error('Something went wrong!')
+         }
       } catch (e) {
          if (e instanceof z.ZodError) {
             const errorMessage: Record<string, string> = {};
@@ -168,7 +166,7 @@ export default function UpdateProduct() {
             console.log(e)
          }
       } finally {
-         setLoadingSubmit(false)
+         setLoading(false)
       }
    }
 
@@ -180,10 +178,6 @@ export default function UpdateProduct() {
       }
    }
 
-   if (loading) {
-      return <div><SkeletonCard /></div>;
-   }
-
    return (
       <div className="px-5 pb-10">
          <h1 className="text-xl py-7">Edit produk</h1>
@@ -192,8 +186,8 @@ export default function UpdateProduct() {
                <Label>Nama</Label>
                <Input
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={product.name}
+                  onChange={(e) => setProduct({ ...product, name: e.target.value })}
                />
                {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
             </div>
@@ -201,8 +195,8 @@ export default function UpdateProduct() {
                <Label>Harga</Label>
                <Input
                   type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  value={product.price}
+                  onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
                />
                {errors.price && <p className="text-xs text-red-500">{errors.price}</p>}
             </div>
@@ -210,8 +204,8 @@ export default function UpdateProduct() {
                <Label>Jumlah</Label>
                <Input
                   type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
+                  value={product.quantity}
+                  onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
                />
                {errors.quantity && <p className="text-xs text-red-500">{errors.quantity}</p>}
             </div>
@@ -219,14 +213,18 @@ export default function UpdateProduct() {
                <Label>Sku</Label>
                <Input
                   type="text"
-                  value={sku}
-                  onChange={(e) => setSku(e.target.value)}
+                  value={product.sku}
+                  onChange={(e) => setProduct({ ...product, sku: e.target.value })}
                />
                {errors.sku && <p className="text-xs text-red-500">{errors.sku}</p>}
             </div>
             <div className="grid w-full max-w-xl items-center gap-2">
                <Label>Photo</Label>
-               {photo && <Image src={photo} width={120} height={120} alt="iamge" />}
+               {product.photo &&
+                  <div>
+                     <Image src={product.photo} width={120} height={120} alt={product.photo} />
+                  </div>
+               }
                <Input
                   type="file"
                   onChange={(e) => hamdleImage(e.target.files)}
@@ -258,12 +256,12 @@ export default function UpdateProduct() {
                <Label>Deskripsi</Label>
                <Input
                   type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={product.description}
+                  onChange={(e) => setProduct({ ...product, description: e.target.value })}
                />
                {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
             </div>
-            {loadingSubmit ? (
+            {loading ? (
                <div className="flex justify-end max-w-xl">
                   <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
                </div>

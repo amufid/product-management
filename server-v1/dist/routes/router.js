@@ -24,7 +24,7 @@ exports.router.use(authMiddleware_1.authentication);
 // router private api user 
 exports.router.get('/api/user/:id', userController_1.UserController.findOne);
 exports.router.put('/api/user', userController_1.UserController.update);
-exports.router.delete('/api/user/:id', userController_1.UserController.remove);
+exports.router.delete('/api/user', userController_1.UserController.remove);
 // router api trnsaction
 exports.router.post('/api/transaction', transactionController_1.TransactionController.create);
 exports.router.get('/api/transaction', transactionController_1.TransactionController.findAll);
@@ -64,6 +64,7 @@ exports.router.get('/api/categories/:id', categoryController_1.CategoryControlle
 exports.router.use(authMiddleware_1.authorization);
 // router api user 
 exports.router.get('/api/user', userController_1.UserController.findAll);
+exports.router.patch('/api/user/approve', userController_1.UserController.approve);
 // router api products 
 exports.router.post('/api/products', productController_1.ProductsController.create);
 exports.router.post('/api/products/uploadImage', cloudinary_1.upload.single('photo'), cloudinary_1.uploadToCloudinary, productController_1.ProductsController.uploadImage);

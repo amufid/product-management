@@ -8,6 +8,7 @@ function toUserResponse(user) {
         email: user.email,
         password: user.password,
         role: user.role,
+        approved: user.approved,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
     };

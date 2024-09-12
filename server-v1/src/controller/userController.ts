@@ -41,7 +41,8 @@ export class UserController {
 
    static async findOne(req: Request, res: Response, next: NextFunction) {
       try {
-         const userId = Number(req.params.id)
+         // const userId = Number(req.params.id)
+         const userId = Number(req.userLogged!.id)
          const response = await UserService.findOne(userId)
          res.status(200).json({
             message: 'Success',
@@ -68,9 +69,23 @@ export class UserController {
 
    static async remove(req: Request, res: Response, next: NextFunction) {
       try {
-         const userId = Number(req.params.id)
-         await UserService.remove(userId)
+         const userEmail = req.body.email
+         await UserService.remove(userEmail)
          res.status(200).json({ message: 'Success' })
+      } catch (e) {
+         next(e)
+      }
+   }
+
+   static async approve(req: Request, res: Response, next: NextFunction) {
+      try {
+         const userEmail = req.body.email
+         const request: UserRequest = req.body as UserRequest
+         const response = await UserService.approve(userEmail, request)
+         res.status(200).json({
+            message: 'Success',
+            data: response
+         })
       } catch (e) {
          next(e)
       }

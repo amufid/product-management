@@ -98,9 +98,20 @@ export class Validation {
       role: z.string(),
    })
 
-   static readonly LOGIN: ZodType = z.object({
+   static readonly UserUpdate: ZodType = z.object({
+      username: z.string().min(3),
       email: z.string().min(5),
-      password: z.string().min(7),
+      // password: z.string().min(7),
+      // role: z.string(),
+   })
+
+   static readonly UserApprove: ZodType = z.object({
+      approved: z.boolean(),
+   })
+
+   static readonly LOGIN: ZodType = z.object({
+      email: z.string(),
+      password: z.string(),
    })
 
    // warehouse 

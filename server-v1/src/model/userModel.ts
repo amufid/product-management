@@ -6,6 +6,7 @@ export type UserResponse = {
    email: string;
    password: string;
    role: RoleType;
+   approved: boolean;
    createdAt: Date;
    updatedAt: Date;
 }
@@ -19,6 +20,7 @@ export type UserRequest = {
    email: string;
    password: string;
    role: RoleType;
+   approved: boolean;
 }
 
 export type LoginUserRequest = {
@@ -38,6 +40,7 @@ export function toUserResponse(user: Users): UserResponse {
       email: user.email,
       password: user.password,
       role: user.role,
+      approved: user.approved,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
    }

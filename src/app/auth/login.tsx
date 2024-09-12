@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
-import { useRouter } from 'next/navigation';
 import {
    Form,
    FormControl,
@@ -15,11 +14,12 @@ import {
    FormMessage,
 } from "@/components/ui/form";
 import { toast } from 'react-toastify';
-import Cookies from 'js-cookie'
+import { baseURL } from '@/lib/accessToken';
+import { useAuth } from '@/context/authContext';
 
 const formSchema = z.object({
-   email: z.string().min(5, { message: 'Email must be at least 5 characters.' }),
-   password: z.string().min(7, { message: 'Password must be at least 7 characters.' }),
+   email: z.string(),
+   password: z.string(),
 })
 
 type FormSchema = z.infer<typeof formSchema>
@@ -33,23 +33,34 @@ export default function AuthPage() {
       }
    });
    const { register, handleSubmit, control } = form;
-   const router = useRouter()
+   const { login } = useAuth()
 
    const onSubmit = async (values: FormSchema) => {
       try {
-         const response = await fetch('http://localhost:5000/api/user/login', {
+         const res = await fetch(`${baseURL}/user/login`, {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json'
             },
             body: JSON.stringify(values)
          })
-         const data = await response.json()
-         Cookies.set('accessToken', data.accessToken)
-         toast.success('Login successful')
-         router.push('/product')
+
+         if (!res.ok) {
+            toast.error('Email atau password salah!');
+            return;
+         }
+
+         const data = await res.json()
+
+         if (data.accessToken) {
+            login({ user: data.username }, data.accessToken)
+            toast.success('Login successful')
+            window.location.href = '/dashboard'
+         } else {
+            toast.error('Email atau password salah!');
+         }
       } catch (error) {
-         console.log(error)
+         toast.error(`${error}`)
       }
    }
 

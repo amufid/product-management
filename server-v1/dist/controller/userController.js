@@ -56,7 +56,8 @@ class UserController {
     static findOne(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = Number(req.params.id);
+                // const userId = Number(req.params.id)
+                const userId = Number(req.userLogged.id);
                 const response = yield userService_1.UserService.findOne(userId);
                 res.status(200).json({
                     message: 'Success',
@@ -87,9 +88,25 @@ class UserController {
     static remove(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const userId = Number(req.params.id);
-                yield userService_1.UserService.remove(userId);
+                const userEmail = req.body.email;
+                yield userService_1.UserService.remove(userEmail);
                 res.status(200).json({ message: 'Success' });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    static approve(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userEmail = req.body.email;
+                const request = req.body;
+                const response = yield userService_1.UserService.approve(userEmail, request);
+                res.status(200).json({
+                    message: 'Success',
+                    data: response
+                });
             }
             catch (e) {
                 next(e);

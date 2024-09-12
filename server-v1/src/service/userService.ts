@@ -29,7 +29,10 @@ export class UserService {
 
       const setData = {
          ...registerRequest,
-         ...{ password: hashPassword }
+         ...{
+            password: hashPassword,
+            approved: false,
+         }
       }
 
       const register = await prisma.users.create({
@@ -48,6 +51,10 @@ export class UserService {
 
       if (!findUser) {
          throw new ResponseError(401, "Email or password wrong")
+      }
+
+      if (findUser.approved === false) {
+         throw new ResponseError(401, "Invalid credentials")
       }
 
       const checkPassword = await bcrypt.compare(loginRequest.password, findUser.password)
@@ -86,7 +93,7 @@ export class UserService {
    }
 
    static async update(userId: number, request: UserRequest): Promise<UserResponse> {
-      const updateRequest = Validation.validate(Validation.USER, request)
+      const updateRequest = Validation.validate(Validation.UserUpdate, request)
 
       await this.findOne(userId)
 
@@ -100,11 +107,37 @@ export class UserService {
       return toUserResponse(user)
    }
 
-   static async remove(userId: number): Promise<UserResponse> {
-      await this.findOne(userId)
+   static async remove(userEmail: string): Promise<UserResponse> {
+      const findUser = await prisma.users.findUnique({
+         where: { email: userEmail }
+      })
 
+      if (!findUser) {
+         throw new ResponseError(404, 'User not found')
+      }
       const user = await prisma.users.delete({
-         where: { id: userId }
+         where: { email: findUser.email }
+      })
+
+      return toUserResponse(user)
+   }
+
+   static async approve(userEmail: string, request: UserRequest): Promise<UserResponse> {
+      const approveRequest = Validation.validate(Validation.UserApprove, request)
+
+      const findUser = await prisma.users.findUnique({
+         where: { email: userEmail }
+      })
+
+      if (!findUser) {
+         throw new ResponseError(404, 'User not found')
+      }
+
+      const user = await prisma.users.update({
+         where: {
+            id: findUser.id
+         },
+         data: approveRequest
       })
 
       return toUserResponse(user)
