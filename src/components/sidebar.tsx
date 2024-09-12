@@ -10,39 +10,25 @@ import { HiUsers } from "react-icons/hi";
 import { ModeToggle } from "./toggle-theme";
 import { MdSpaceDashboard } from "react-icons/md";
 import { useEffect, useRef } from "react";
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+import LogoutButton from "./logoutButton";
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuLabel,
+   DropdownMenuSeparator,
+   DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { FaUserCheck } from "react-icons/fa";
+import { useAuth } from "@/context/authContext";
 
 export default function Sidebar({ children, }: Readonly<{ children: React.ReactNode }>) {
-   const pathname = usePathname();
-
-   if (pathname.includes("/auth")) {
-      return <div>{children}</div>
-   }
-
-   const leftDivRef = useRef<HTMLDivElement>(null);
-
-   // function untuk menghilangkan scroll ketika cursor berada di bagian kiri page
-   useEffect(() => {
-      const handleScroll = (event: Event) => {
-         event.preventDefault();
-      }
-
-      const leftDiv = leftDivRef.current;
-
-      if (leftDiv) {
-         leftDiv.addEventListener('wheel', handleScroll, { passive: false });
-      }
-
-      return () => {
-         if (leftDiv) {
-            leftDiv.removeEventListener('wheel', handleScroll);
-         }
-      }
-   }, [])
-
+   const { state } = useAuth()
    const items = [
       {
          id: 1,
-         route: '/',
+         route: '/dashboard',
          icon: <MdSpaceDashboard />,
          title: 'Dashboard'
       },
@@ -76,7 +62,46 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
          icon: <HiUsers />,
          title: 'Pengguna'
       },
+      {
+         id: 7,
+         route: '/user/approve',
+         icon: <FaUserCheck />,
+         title: 'Permintaan user'
+      },
    ]
+
+   const pathname = usePathname();
+   const routes = items.map(item => item.route)
+
+   // sidebar tidak ditampilkan 
+   if (pathname.includes("/auth")) {
+      return <div>{children}</div>
+   }
+
+   if (!routes.some(route => pathname.includes(route))) {
+      return <div>{children}</div>
+   }
+
+   const leftDivRef = useRef<HTMLDivElement>(null);
+
+   // function untuk menghilangkan scroll ketika cursor berada di bagian kiri page
+   useEffect(() => {
+      const handleScroll = (event: Event) => {
+         event.preventDefault();
+      }
+
+      const leftDiv = leftDivRef.current;
+
+      if (leftDiv) {
+         leftDiv.addEventListener('wheel', handleScroll, { passive: false });
+      }
+
+      return () => {
+         if (leftDiv) {
+            leftDiv.removeEventListener('wheel', handleScroll);
+         }
+      }
+   }, [])
 
    return (
       <div className="min-h-screen w-full rounded-lg border">
@@ -84,14 +109,13 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
             {/* left */}
             <div
                ref={leftDivRef}
-               className="w-[20%] bg-slate-300 dark:bg-slate-950 min-h-screen fixed"
+               className="fixed w-0 sm:w-[20%] bg-slate-300 dark:bg-slate-950 min-h-screen"
             >
-               <div className="flex flex-col min-h-screen w-full p-2">
-                  <div className="flex justify-between items-center py-5">
-                     <h1 className="text-xl font-semibold">Warehouse</h1>
-                     <ModeToggle />
+               <div className="hidden sm:flex flex-col min-h-screen w-full p-2">
+                  <div className="flex justify-between items-center p-3">
+                     <h1 className="text-xl font-semibold">Warehouse X</h1>
                   </div>
-                  <div>
+                  <div className="mt-1">
                      <ul>
                         {items.map((item) => (
                            <div key={item.id}>
@@ -111,10 +135,44 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
                </div>
             </div>
             {/* right  */}
-            <div className="w-[80%] dark:bg-slate-900 ml-auto">
-               <div className="h-full w-full">
+            <div className="w-full sm:w-[80%] min-h-screen dark:bg-slate-900 ml-auto">
+               <div className="fixed w-full sm:w-[80%] bg-slate-300 dark:bg-slate-950 py-3 px-3 sm:px-10 top-0 z-30">
+                  <div className="flex flex-row w-full justify-between sm:justify-end gap-3">
+
+                     <div>
+                        <ModeToggle />
+                     </div>
+
+                     <DropdownMenu>
+                        <DropdownMenuTrigger className="px-3 hover:text-emerald-500">{state.user}</DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                           <DropdownMenuLabel>{state.user}</DropdownMenuLabel>
+                           <DropdownMenuSeparator />
+                           <div className="flex sm:hidden flex-col">
+                              {items.map((item) => (
+                                 <Link href={item.route} key={item.id}>
+                                    <DropdownMenuItem>
+                                       {item.title}
+                                    </DropdownMenuItem>
+                                 </Link>
+                              ))}
+                           </div>
+                           <Link href='/user/editUser'>
+                              <DropdownMenuItem>Profil</DropdownMenuItem>
+                           </Link>
+                           <DropdownMenuItem>
+                              <LogoutButton />
+                           </DropdownMenuItem>
+                        </DropdownMenuContent>
+                     </DropdownMenu>
+
+                  </div>
+               </div>
+
+               <div className="w-full min-h-screen mt-[60px]">
                   {children}
                </div>
+
             </div>
          </div>
       </div>

@@ -40,3 +40,8 @@ export const formSchemaInventory = z.object({
    locationId: z.number().min(1, 'Lokasi tidak boleh kosong'),
    quantity: z.number().min(1, 'Jumlah minimal 1'),
 })
+
+export const formSchemaUser = z.object({
+   username: z.string().min(3, 'Nama minimal 3 karakter'),
+   email: z.string().min(5, 'Email minimal 5 karakter'),
+})

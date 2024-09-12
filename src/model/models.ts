@@ -57,4 +57,5 @@ export interface User {
    username: number;
    email: number;
    role: string;
+   approved: boolean;
 }

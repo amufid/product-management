@@ -30,7 +30,10 @@ class UserService {
                 throw new responseError_1.ResponseError(400, "Email is registered");
             }
             const hashPassword = yield bcrypt_1.default.hash(registerRequest.password, 10);
-            const setData = Object.assign(Object.assign({}, registerRequest), { password: hashPassword });
+            const setData = Object.assign(Object.assign({}, registerRequest), {
+                password: hashPassword,
+                approved: false,
+            });
             const register = yield prisma_1.prisma.users.create({
                 data: setData
             });
@@ -45,6 +48,9 @@ class UserService {
             });
             if (!findUser) {
                 throw new responseError_1.ResponseError(401, "Email or password wrong");
+            }
+            if (findUser.approved === false) {
+                throw new responseError_1.ResponseError(401, "Invalid credentials");
             }
             const checkPassword = yield bcrypt_1.default.compare(loginRequest.password, findUser.password);
             if (!checkPassword) {
@@ -80,7 +86,7 @@ class UserService {
     }
     static update(userId, request) {
         return __awaiter(this, void 0, void 0, function* () {
-            const updateRequest = validation_1.Validation.validate(validation_1.Validation.USER, request);
+            const updateRequest = validation_1.Validation.validate(validation_1.Validation.UserUpdate, request);
             yield this.findOne(userId);
             const user = yield prisma_1.prisma.users.update({
                 where: {
@@ -91,11 +97,34 @@ class UserService {
             return (0, userModel_1.toUserResponse)(user);
         });
     }
-    static remove(userId) {
+    static remove(userEmail) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.findOne(userId);
+            const findUser = yield prisma_1.prisma.users.findUnique({
+                where: { email: userEmail }
+            });
+            if (!findUser) {
+                throw new responseError_1.ResponseError(404, 'User not found');
+            }
             const user = yield prisma_1.prisma.users.delete({
-                where: { id: userId }
+                where: { email: findUser.email }
+            });
+            return (0, userModel_1.toUserResponse)(user);
+        });
+    }
+    static approve(userEmail, request) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const approveRequest = validation_1.Validation.validate(validation_1.Validation.UserApprove, request);
+            const findUser = yield prisma_1.prisma.users.findUnique({
+                where: { email: userEmail }
+            });
+            if (!findUser) {
+                throw new responseError_1.ResponseError(404, 'User not found');
+            }
+            const user = yield prisma_1.prisma.users.update({
+                where: {
+                    id: findUser.id
+                },
+                data: approveRequest
             });
             return (0, userModel_1.toUserResponse)(user);
         });

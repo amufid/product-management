@@ -22,7 +22,7 @@ router.use(authentication)
 // router private api user 
 router.get('/api/user/:id', UserController.findOne)
 router.put('/api/user', UserController.update)
-router.delete('/api/user/:id', UserController.remove)
+router.delete('/api/user', UserController.remove)
 
 // router api trnsaction
 router.post('/api/transaction', TransactionController.create)
@@ -71,6 +71,7 @@ router.use(authorization)
 
 // router api user 
 router.get('/api/user', UserController.findAll)
+router.patch('/api/user/approve', UserController.approve)
 
 // router api products 
 router.post('/api/products', ProductsController.create)

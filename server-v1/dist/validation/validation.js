@@ -90,9 +90,18 @@ Validation.USER = zod_1.z.object({
     password: zod_1.z.string().min(7),
     role: zod_1.z.string(),
 });
-Validation.LOGIN = zod_1.z.object({
+Validation.UserUpdate = zod_1.z.object({
+    username: zod_1.z.string().min(3),
     email: zod_1.z.string().min(5),
-    password: zod_1.z.string().min(7),
+    // password: z.string().min(7),
+    // role: z.string(),
+});
+Validation.UserApprove = zod_1.z.object({
+    approved: zod_1.z.boolean(),
+});
+Validation.LOGIN = zod_1.z.object({
+    email: zod_1.z.string(),
+    password: zod_1.z.string(),
 });
 // warehouse 
 Validation.WAREHOUSE = zod_1.z.object({

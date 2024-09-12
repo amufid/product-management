@@ -23,6 +23,7 @@ import {
    SelectValue,
 } from "@/components/ui/select";
 import { toast } from 'react-toastify';
+import { baseURL } from '@/lib/accessToken';
 
 const formSchema = z.object({
    username: z.string().min(3, { message: 'Username must be at least 3 characters.' }),
@@ -48,17 +49,22 @@ export default function FormRegister() {
 
    const onSubmit = async (values: FormSchema) => {
       try {
-         await fetch('http://localhost:5000/api/user/register', {
+         const res = await fetch(`${baseURL}/user/register`, {
             method: 'POST',
             headers: {
                'Content-Type': 'application/json'
             },
             body: JSON.stringify(values)
          })
-         toast.success('Registration successful')
+
+         if (!res.ok) {
+            toast.error('Kesalahan server!')
+         }
+
+         toast.success('Registrasi berhasil')
          setTimeout(() => { window.location.reload() }, 2000)
       } catch (error) {
-         console.log(error)
+         toast.error('Kesalahan server!')
       }
    }
 
