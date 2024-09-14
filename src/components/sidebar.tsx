@@ -111,16 +111,16 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
                ref={leftDivRef}
                className="fixed w-0 sm:w-[20%] bg-slate-300 dark:bg-slate-950 min-h-screen"
             >
-               <div className="hidden sm:flex flex-col min-h-screen w-full p-2">
-                  <div className="flex justify-between items-center p-3">
+               <div className="hidden sm:flex flex-col h-auto sm:min-h-screen w-full">
+                  <div className="float border-b pt-[18px] pb-[17px] pl-5">
                      <h1 className="text-xl font-semibold">Warehouse X</h1>
                   </div>
-                  <div className="mt-1">
+                  <div className="mt-1 p-2">
                      <ul>
                         {items.map((item) => (
                            <div key={item.id}>
                               <Link href={item.route} >
-                                 <li className="w-full flex items-center py-3 px-5 bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-800 hover:bg-slate-100 mb-1 rounded-sm">
+                                 <li className="w-full flex items-center py-3 px-5 dark:hover:bg-slate-800 hover:bg-slate-100 mb-1 rounded-sm">
                                     {item.icon}
                                     <span className="ml-3">{item.title}</span>
                                  </li>
@@ -129,47 +129,53 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
                         ))}
                      </ul>
                   </div>
-                  <div className="flex justify-center items-end h-full text-sm mt-auto">
+                  <div className="flex justify-center items-end h-full text-sm mt-auto pb-2">
                      <p className="h-full">Copyright © 2024</p>
                   </div>
                </div>
             </div>
             {/* right  */}
             <div className="w-full sm:w-[80%] min-h-screen dark:bg-slate-900 ml-auto">
-               <div className="fixed w-full sm:w-[80%] bg-slate-300 dark:bg-slate-950 py-3 px-3 sm:px-10 top-0 z-30">
-                  <div className="flex flex-row w-full justify-between sm:justify-end gap-3">
+               <div className="fixed w-full sm:w-[80%] bg-slate-300 dark:bg-slate-950 py-3 px-3 sm:px-5 top-0 z-30 border-b">
+                  <div className="flex flex-row w-full justify-between sm:justify-end items-center">
 
-                     <div>
-                        <ModeToggle />
+                     <div className="flex sm:hidden">
+                        <h1 className="text-lg font-semibold">Warehouse X</h1>
                      </div>
 
-                     <DropdownMenu>
-                        <DropdownMenuTrigger className="px-3 hover:text-emerald-500">{state.user}</DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                           <DropdownMenuLabel>{state.user}</DropdownMenuLabel>
-                           <DropdownMenuSeparator />
-                           <div className="flex sm:hidden flex-col">
-                              {items.map((item) => (
-                                 <Link href={item.route} key={item.id}>
-                                    <DropdownMenuItem>
-                                       {item.title}
-                                    </DropdownMenuItem>
-                                 </Link>
-                              ))}
-                           </div>
-                           <Link href='/user/editUser'>
-                              <DropdownMenuItem>Profil</DropdownMenuItem>
-                           </Link>
-                           <DropdownMenuItem>
-                              <LogoutButton />
-                           </DropdownMenuItem>
-                        </DropdownMenuContent>
-                     </DropdownMenu>
+                     <div className="flex flex-row gap-3">
+                        <div>
+                           <ModeToggle />
+                        </div>
+
+                        <DropdownMenu>
+                           <DropdownMenuTrigger className="px-3 hover:text-emerald-500">{state.user}</DropdownMenuTrigger>
+                           <DropdownMenuContent>
+                              <DropdownMenuLabel>{state.user}</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <div className="flex sm:hidden flex-col">
+                                 {items.map((item) => (
+                                    <Link href={item.route} key={item.id}>
+                                       <DropdownMenuItem>
+                                          {item.title}
+                                       </DropdownMenuItem>
+                                    </Link>
+                                 ))}
+                              </div>
+                              <Link href='/user/editUser'>
+                                 <DropdownMenuItem>Profil</DropdownMenuItem>
+                              </Link>
+                              <DropdownMenuItem>
+                                 <LogoutButton />
+                              </DropdownMenuItem>
+                           </DropdownMenuContent>
+                        </DropdownMenu>
+                     </div>
 
                   </div>
                </div>
 
-               <div className="w-full min-h-screen mt-[60px]">
+               <div className="w-full mt-[83px]">
                   {children}
                </div>
 

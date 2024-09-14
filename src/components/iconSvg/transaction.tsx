@@ -53,7 +53,6 @@ function TransactionIcon() {
             ></path>
             <path
                d="M343 587a1 1 0 100 2 1 1 0 000-2z"
-               style={{ InkscapeStroke: "none" }}
                fill="#ed7161"
                fillOpacity="1"
                fillRule="evenodd"
@@ -64,7 +63,6 @@ function TransactionIcon() {
             ></path>
             <path
                d="M339 587a1 1 0 100 2 1 1 0 000-2z"
-               style={{ InkscapeStroke: "none" }}
                fill="#ecba16"
                fillOpacity="1"
                fillRule="evenodd"
@@ -75,7 +73,6 @@ function TransactionIcon() {
             ></path>
             <path
                d="M335 587a1 1 0 100 2 1 1 0 000-2z"
-               style={{ InkscapeStroke: "none" }}
                fill="#42b05c"
                fillOpacity="1"
                fillRule="evenodd"
@@ -86,7 +83,6 @@ function TransactionIcon() {
             ></path>
             <path
                d="M293 630a1 1 0 00-1 1 1 1 0 001 1 1 1 0 001-1 1 1 0 00-1-1z"
-               style={{ InkscapeStroke: "none" }}
                fill="#000"
                fillRule="evenodd"
                strokeLinecap="round"
@@ -96,7 +92,6 @@ function TransactionIcon() {
             ></path>
             <path
                d="M301 590a1 1 0 100 2 1 1 0 000-2z"
-               style={{ InkscapeStroke: "none" }}
                fill="#000"
                fillRule="evenodd"
                strokeLinecap="round"
@@ -148,7 +143,6 @@ function TransactionIcon() {
             </g>
             <path
                d="M322.639 595.584a15.489 15.489 0 00-10.383 3.902 1 1 0 00-.082 1.412 1 1 0 001.412.082c4.21-3.744 10.506-4.571 15.666-1.595a13.49 13.49 0 012.332 1.699 1 1 0 001.412-.068 1 1 0 00-.066-1.413 15.516 15.516 0 00-2.68-1.95 15.384 15.384 0 00-7.611-2.07zm12.691 7.895a1 1 0 00-.375.105 1 1 0 00-.44 1.344 13.402 13.402 0 01.13 11.91l-.448-2.936a1 1 0 00-1.138-.838 1 1 0 00-.838 1.14l.869 5.708a1 1 0 001.353.781l5.385-2.101a1 1 0 00.567-1.295 1 1 0 00-1.295-.568l-2.688 1.048a15.417 15.417 0 00-.113-13.754 1 1 0 00-.582-.498 1 1 0 00-.387-.047z"
-               style={{ InkscapeStroke: "none" }}
                fill="#000"
                fillRule="evenodd"
                strokeLinecap="round"
@@ -167,7 +161,6 @@ function TransactionIcon() {
             ></path>
             <path
                d="M322.531 602.05c-4.936 0-8.96 4.019-8.96 8.95 0 4.931 4.024 8.95 8.96 8.95 4.937 0 8.961-4.019 8.961-8.95a8.91 8.91 0 00-1.088-4.277 1 1 0 00-1.357-.399 1 1 0 00-.399 1.356c.539.986.844 2.114.844 3.32a6.94 6.94 0 01-6.96 6.95 6.94 6.94 0 01-6.962-6.95 6.94 6.94 0 016.961-6.95c1.346 0 2.595.38 3.658 1.036a1 1 0 001.375-.324 1 1 0 00-.324-1.377 8.942 8.942 0 00-4.709-1.334z"
-               style={{ InkscapeStroke: "none" }}
                fill="#000"
                fillRule="evenodd"
                strokeLinecap="round"

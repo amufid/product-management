@@ -2,14 +2,13 @@ import CategoryIcon from "@/components/iconSvg/category";
 import ProductIcon from "@/components/iconSvg/product";
 import TransactionIcon from "@/components/iconSvg/transaction";
 import UserIcon from "@/components/iconSvg/user";
-import { baseURL } from "@/lib/accessToken";
+import { baseURL } from "@/lib/baseUrl";
 import { cookies } from "next/headers"
 import { CountUpAnimation } from "@/components/dashboard/countUpAnimation";
 import Chart from "@/components/dashboard/chart";
 
-const accessToken = cookies().get('accessToken')?.value;
-
 async function getProductTotal() {
+   const accessToken = cookies().get('accessToken')?.value;
    const response = await fetch(`${baseURL}/products`, {
       headers: {
          'Authorization': `Bearer ${accessToken}`
@@ -21,6 +20,7 @@ async function getProductTotal() {
 }
 
 async function getCategoryTotal() {
+   const accessToken = cookies().get('accessToken')?.value;
    const response = await fetch(`${baseURL}/categories`, {
       headers: {
          'Authorization': `Bearer ${accessToken}`
@@ -32,6 +32,7 @@ async function getCategoryTotal() {
 }
 
 async function getTransactionTotal() {
+   const accessToken = cookies().get('accessToken')?.value;
    const response = await fetch(`${baseURL}/transaction`, {
       headers: {
          'Authorization': `Bearer ${accessToken}`
@@ -43,6 +44,7 @@ async function getTransactionTotal() {
 }
 
 async function getUserTotal() {
+   const accessToken = cookies().get('accessToken')?.value;
    const response = await fetch(`${baseURL}/user`, {
       headers: {
          'Authorization': `Bearer ${accessToken}`
@@ -58,7 +60,6 @@ export default async function Home() {
    const categoryResponse = getCategoryTotal()
    const transactionResponse = getTransactionTotal()
    const userResponse = getUserTotal()
-
    const [
       products,
       categories,
@@ -72,12 +73,12 @@ export default async function Home() {
    ])
 
    return (
-      <main className="flex min-h-screen flex-col p-5 sm:p-10 gap-3">
-         <div className="pb-5 flex">
+      <main className="flex min-h-screen flex-col gap-3 m-5">
+         <div className="pb-2">
             <h1 className="text-left text-2xl">Dashboard</h1>
          </div>
          <div className="flex flex-col sm:flex-row items-center w-full gap-3">
-            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-800 p-7 rounded-sm flex flex-row items-center justify-between">
+            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-950 p-7 rounded-sm flex flex-row items-center justify-between border">
                <div className="w-auto h-auto rounded-full bg-blue-500 p-2">
                   <ProductIcon />
                </div>
@@ -89,7 +90,7 @@ export default async function Home() {
                   <h2>Total produk</h2>
                </div>
             </div>
-            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-800 p-7 rounded-sm flex flex-row items-center justify-between">
+            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-950 p-7 rounded-sm flex flex-row items-center justify-between border">
                <div className="w-auto h-auto rounded-full bg-yellow-500 p-2">
                   <CategoryIcon />
                </div>
@@ -101,7 +102,7 @@ export default async function Home() {
                   <h2>Total kategori</h2>
                </div>
             </div>
-            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-800 p-7 rounded-sm flex flex-row items-center justify-between">
+            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-950 p-7 rounded-sm flex flex-row items-center justify-between border">
                <div className="w-auto h-auto rounded-full bg-green-500 p-2">
                   <TransactionIcon />
                </div>
@@ -113,7 +114,7 @@ export default async function Home() {
                   <h2>Total transaksi</h2>
                </div>
             </div>
-            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-800 p-7 rounded-sm flex flex-row items-center justify-between">
+            <div className="w-full sm:w-[25%] h-40 bg-slate-300 dark:bg-slate-950 p-7 rounded-sm flex flex-row items-center justify-between border">
                <div className="w-auto h-auto rounded-full bg-amber-600 p-2">
                   <UserIcon />
                </div>
@@ -127,10 +128,10 @@ export default async function Home() {
             </div>
          </div>
          <div className="flex flex-col sm:flex-row gap-x-3">
-            <div className="bg-slate-500 dark:bg-slate-800 rounded-sm w-full sm:w-[50rem]">
+            <div className="bg-slate-500 dark:bg-slate-950 rounded-sm w-full sm:w-[50rem] border">
                <Chart />
             </div>
-            <div className="w-full sm:w-[30rem] h-[30rem] bg-slate-300 dark:bg-slate-800 rounded-sm">
+            <div className="w-full sm:w-[30rem] h-[30rem] bg-slate-300 dark:bg-slate-950 rounded-sm border">
 
             </div>
          </div>

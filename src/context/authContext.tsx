@@ -3,7 +3,7 @@
 import { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
-import { baseURL } from '@/lib/accessToken';
+import { baseURL } from "@/lib/baseUrl";
 
 interface AuthState {
    isAuthenticated: boolean;

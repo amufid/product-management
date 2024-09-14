@@ -12,7 +12,8 @@ import {
    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { accessToken, baseURL } from "@/lib/accessToken"
+import { accessToken } from "@/lib/accessToken"
+import { baseURL } from "@/lib/baseUrl";
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 

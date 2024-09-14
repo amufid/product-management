@@ -1,7 +1,8 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { accessToken, baseURL } from "@/lib/accessToken";
+import { accessToken } from "@/lib/accessToken";
+import { baseURL } from "@/lib/baseUrl";
 import { User } from "@/model/models";
 import { MouseEvent, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -16,6 +17,14 @@ import {
    AlertDialogTitle,
    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+   Table,
+   TableBody,
+   TableCell,
+   TableHead,
+   TableHeader,
+   TableRow,
+} from "@/components/ui/table"
 
 export default function UpdateCategoryPage() {
    const [users, setUsers] = useState<User[]>([])
@@ -82,44 +91,58 @@ export default function UpdateCategoryPage() {
    const findUserApprove = users.filter(user => user.approved === false)
 
    return (
-      <div className="px-5 min-h-screen">
-         <h1 className="text-xl py-7">Permintaan registrasi</h1>
-         <div className="space-y-5 max-w-xl">
-            {findUserApprove.length >= 1 ? (
-               findUserApprove.map((user) => (
-                  <div key={user.id} className="grid w-full max-w-xl items-center gap-2">
-                     <div className="flex flex-row w-full sm:w-[30rem] justify-between">
-                        <div>
-                           <p>{user.email}</p>
-                        </div>
-                        <div className="flex justify-end max-w-xl gap-x-2">
-                           <Button type="submit" onClick={(event) => handleSubmit(event, String(user.email), 'PATCH')} className="bg-emerald-600 hover:bg-emerald-500 text-white">Konfirmasi</Button>
-                           <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                 <Button variant="destructive">Hapus</Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent className="max-w-sm">
-                                 <AlertDialogHeader>
-                                    <AlertDialogTitle>Apakah yakin hapus <span className="font-bold">{user.email}</span>?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                    </AlertDialogDescription>
-                                 </AlertDialogHeader>
-                                 <AlertDialogFooter>
-                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction onClick={(event) => handleSubmit(event, String(user.email), 'DELETE')}>Hapus</AlertDialogAction>
-                                 </AlertDialogFooter>
-                              </AlertDialogContent>
-                           </AlertDialog>
-                        </div>
-                     </div>
-                  </div>
-               ))
-            ) : (
-               <div className="rounded-full p-1 bg-[#f1030349] w-[12rem] text-center">
-                  <p>Tidak ada permintaan</p>
-               </div>
-            )}
-         </div>
-      </div>
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[35rem] border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl pt-2 pb-5">Permintaan registrasi</h1>
+               <Table>
+                  <TableHeader>
+                     <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Aksi</TableHead>
+                     </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                     {findUserApprove.length >= 1 ? (
+                        findUserApprove.map((user) => (
+                           <TableRow key={user.id}>
+                              <TableCell>{user.email}</TableCell>
+                              <TableCell>
+                                 <div className="flex gap-x-2">
+                                    <Button type="submit" onClick={(event) => handleSubmit(event, String(user.email), 'PATCH')} className="bg-emerald-600 hover:bg-emerald-500 text-white">Konfirmasi</Button>
+                                    <AlertDialog>
+                                       <AlertDialogTrigger asChild>
+                                          <Button variant="destructive">Hapus</Button>
+                                       </AlertDialogTrigger>
+                                       <AlertDialogContent className="max-w-sm">
+                                          <AlertDialogHeader>
+                                             <AlertDialogTitle>Apakah yakin hapus <span className="font-bold">{user.email}</span>?</AlertDialogTitle>
+                                             <AlertDialogDescription>
+                                             </AlertDialogDescription>
+                                          </AlertDialogHeader>
+                                          <AlertDialogFooter>
+                                             <AlertDialogCancel>Batal</AlertDialogCancel>
+                                             <AlertDialogAction onClick={(event) => handleSubmit(event, String(user.email), 'DELETE')}>Hapus</AlertDialogAction>
+                                          </AlertDialogFooter>
+                                       </AlertDialogContent>
+                                    </AlertDialog>
+                                 </div>
+                              </TableCell>
+                           </TableRow>
+                        ))
+                     ) : (
+                        <TableRow>
+                           <TableCell>
+                              <div className="rounded-full p-1 bg-[#f1030349] w-[12rem] text-center">
+                                 <p>Tidak ada permintaan</p>
+                              </div>
+                           </TableCell>
+                        </TableRow>
+                     )}
+                  </TableBody>
+               </Table>
+            </div>
+         </div >
+      </div >
    )
 }

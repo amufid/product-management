@@ -17,11 +17,13 @@ import {
    SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@radix-ui/react-dropdown-menu"
-import { accessToken, baseURL } from "@/lib/accessToken"
+import { accessToken } from "@/lib/accessToken"
+import { baseURL } from "@/lib/baseUrl";
 import { formSchemaProduct } from "@/validation/validation"
 import { Category } from "@/model/models"
 import Image from "next/image"
 import MoonLoader from "react-spinners/MoonLoader";
+import { Textarea } from "@/components/ui/textarea"
 
 const uploadImage = async (formData: FormData) => {
    try {
@@ -179,99 +181,102 @@ export default function UpdateProduct() {
    }
 
    return (
-      <div className="px-5 pb-10">
-         <h1 className="text-xl py-7">Edit produk</h1>
-         <form onSubmit={handleSubmit} className="space-y-3 max-w-xl">
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Nama</Label>
-               <Input
-                  type="text"
-                  value={product.name}
-                  onChange={(e) => setProduct({ ...product, name: e.target.value })}
-               />
-               {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Harga</Label>
-               <Input
-                  type="number"
-                  value={product.price}
-                  onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
-               />
-               {errors.price && <p className="text-xs text-red-500">{errors.price}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Jumlah</Label>
-               <Input
-                  type="number"
-                  value={product.quantity}
-                  onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
-               />
-               {errors.quantity && <p className="text-xs text-red-500">{errors.quantity}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Sku</Label>
-               <Input
-                  type="text"
-                  value={product.sku}
-                  onChange={(e) => setProduct({ ...product, sku: e.target.value })}
-               />
-               {errors.sku && <p className="text-xs text-red-500">{errors.sku}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Photo</Label>
-               {product.photo &&
-                  <div>
-                     <Image src={product.photo} width={120} height={120} alt={product.photo} />
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[35rem] border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl pt-2 pb-5">Edit produk</h1>
+               <form onSubmit={handleSubmit} className="space-y-3 max-w-xl">
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Nama</Label>
+                     <Input
+                        type="text"
+                        value={product.name}
+                        onChange={(e) => setProduct({ ...product, name: e.target.value })}
+                     />
+                     {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
                   </div>
-               }
-               <Input
-                  type="file"
-                  onChange={(e) => hamdleImage(e.target.files)}
-               />
-               {errors.photo && <p className="text-xs text-red-500">{errors.photo}</p>}
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Harga</Label>
+                     <Input
+                        type="number"
+                        value={product.price}
+                        onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })}
+                     />
+                     {errors.price && <p className="text-xs text-red-500">{errors.price}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Jumlah</Label>
+                     <Input
+                        type="number"
+                        value={product.quantity}
+                        onChange={(e) => setProduct({ ...product, quantity: Number(e.target.value) })}
+                     />
+                     {errors.quantity && <p className="text-xs text-red-500">{errors.quantity}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Sku</Label>
+                     <Input
+                        type="text"
+                        value={product.sku}
+                        onChange={(e) => setProduct({ ...product, sku: e.target.value })}
+                     />
+                     {errors.sku && <p className="text-xs text-red-500">{errors.sku}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Photo</Label>
+                     {product.photo &&
+                        <div>
+                           <Image src={product.photo} width={120} height={120} alt={product.photo} />
+                        </div>
+                     }
+                     <Input
+                        type="file"
+                        onChange={(e) => hamdleImage(e.target.files)}
+                     />
+                     {errors.photo && <p className="text-xs text-red-500">{errors.photo}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Kategori</Label>
+                     <Select onValueChange={(value) => setCategoryId(Number(value))}>
+                        <SelectTrigger>
+                           <SelectValue placeholder={categoryName} >
+                              {categoryName}
+                           </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectGroup>
+                              <SelectLabel>Pilih kategori</SelectLabel>
+                              {categories.map((category) => (
+                                 <SelectItem value={category.id} key={category.id} >
+                                    {category.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectGroup>
+                        </SelectContent>
+                     </Select>
+                     {errors.categoryId && <p className="text-xs text-red-500">{errors.categoryId}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Deskripsi</Label>
+                     <Textarea
+                        value={product.description}
+                        onChange={(e) => setProduct({ ...product, description: e.target.value })}
+                     />
+                     {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
+                  </div>
+                  {loading ? (
+                     <div className="flex justify-end max-w-xl">
+                        <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
+                     </div>
+                  ) : (
+                     <div className="flex justify-end max-w-xl gap-x-2">
+                        <Button type="submit">Simpan</Button>
+                        <Link href='/product'><Button variant='secondary'>Kembali</Button></Link>
+                     </div>
+                  )}
+               </form>
             </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Kategori</Label>
-               <Select onValueChange={(value) => setCategoryId(Number(value))}>
-                  <SelectTrigger>
-                     <SelectValue placeholder={categoryName} >
-                        {categoryName}
-                     </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                     <SelectGroup>
-                        <SelectLabel>Pilih kategori</SelectLabel>
-                        {categories.map((category) => (
-                           <SelectItem value={category.id} key={category.id} >
-                              {category.name}
-                           </SelectItem>
-                        ))}
-                     </SelectGroup>
-                  </SelectContent>
-               </Select>
-               {errors.categoryId && <p className="text-xs text-red-500">{errors.categoryId}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Deskripsi</Label>
-               <Input
-                  type="text"
-                  value={product.description}
-                  onChange={(e) => setProduct({ ...product, description: e.target.value })}
-               />
-               {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
-            </div>
-            {loading ? (
-               <div className="flex justify-end max-w-xl">
-                  <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
-               </div>
-            ) : (
-               <div className="flex justify-end max-w-xl gap-x-2">
-                  <Button type="submit">Simpan</Button>
-                  <Link href='/product'><Button variant='secondary'>Kembali</Button></Link>
-               </div>
-            )}
-         </form>
+         </div>
       </div>
    )
 }

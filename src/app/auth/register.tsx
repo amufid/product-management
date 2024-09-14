@@ -23,7 +23,7 @@ import {
    SelectValue,
 } from "@/components/ui/select";
 import { toast } from 'react-toastify';
-import { baseURL } from '@/lib/accessToken';
+import { baseURL } from "@/lib/baseUrl";
 
 const formSchema = z.object({
    username: z.string().min(3, { message: 'Username must be at least 3 characters.' }),

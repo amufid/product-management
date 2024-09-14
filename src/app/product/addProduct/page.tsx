@@ -28,9 +28,11 @@ import {
    SelectValue,
 } from "@/components/ui/select";
 import MoonLoader from "react-spinners/MoonLoader";
-import { accessToken, baseURL } from "@/lib/accessToken"
+import { accessToken } from "@/lib/accessToken"
+import { baseURL } from "@/lib/baseUrl";
 import { formSchemaProduct } from "@/validation/validation"
 import { Category } from "@/model/models"
+import { Textarea } from "@/components/ui/textarea"
 
 type FormSchema = z.infer<typeof formSchemaProduct>
 
@@ -108,156 +110,159 @@ export default function AddProduct() {
    }, [categoryName])
 
    return (
-      <div className="min-h-screen px-5">
-         <h1 className="text-xl py-7">Tambah produk</h1>
-         <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 max-w-xl">
-               <FormField
-                  control={form.control}
-                  name='name'
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Nama</FormLabel>
-                        <FormControl>
-                           <Input
-                              placeholder='Nama'
-                              type='text'
-                              {...field}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name='price'
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Harga</FormLabel>
-                        <FormControl>
-                           <Input
-                              placeholder='Harga'
-                              type='number'
-                              {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name='quantity'
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Jumlah</FormLabel>
-                        <FormControl>
-                           <Input
-                              placeholder='Jumlah'
-                              type='number'
-                              {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name='sku'
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Sku</FormLabel>
-                        <FormControl>
-                           <Input
-                              placeholder='Sku'
-                              type='text'
-                              {...field}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name='photo'
-                  render={({ field: { value, onChange, ...fieldProps } }) => (
-                     <FormItem>
-                        <FormLabel>Foto</FormLabel>
-                        <FormControl>
-                           <Input
-                              type='file'
-                              {...fieldProps}
-                              accept="image/*"
-                              onChange={(event) =>
-                                 onChange(event.target.files && event.target.files[0])
-                              }
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name='categoryId'
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Kategori</FormLabel>
-                        <Select onValueChange={(value) => field.onChange(Number(value))}>
-                           <SelectTrigger>
-                              <SelectValue placeholder='Pilih kategori'>
-                                 {categoryName}
-                              </SelectValue>
-                           </SelectTrigger>
-                           <SelectContent>
-                              <SelectGroup>
-                                 <SelectLabel>Kategori</SelectLabel>
-                                 {categories.map((category) => (
-                                    <SelectItem value={category.id.toString()} key={category.id}>
-                                       {category.name}
-                                    </SelectItem>
-                                 ))}
-                              </SelectGroup>
-                           </SelectContent>
-                        </Select>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name='description'
-                  render={({ field }) => (
-                     <FormItem>
-                        <FormLabel>Deskripsi</FormLabel>
-                        <FormControl>
-                           <Input
-                              placeholder='Deskripsi'
-                              type='text'
-                              {...field}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               {loading ? (
-                  <div className="flex justify-end max-w-xl py-3">
-                     <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
-                  </div>
-               ) : (
-                  <div className="flex justify-end max-w-xl gap-x-2 py-3">
-                     <Button type="submit">Simpan</Button>
-                     <Link href='/product'><Button variant='secondary'>Kembali</Button></Link>
-                  </div>
-               )}
-            </form>
-         </Form>
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[35rem] border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl pt-2 pb-5">Tambah produk</h1>
+               <Form {...form}>
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 max-w-xl">
+                     <FormField
+                        control={form.control}
+                        name='name'
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Nama</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    placeholder='Nama'
+                                    type='text'
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name='price'
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Harga</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    placeholder='Harga'
+                                    type='number'
+                                    {...field}
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name='quantity'
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Jumlah</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    placeholder='Jumlah'
+                                    type='number'
+                                    {...field}
+                                    onChange={(e) => field.onChange(Number(e.target.value))}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name='sku'
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Sku</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    placeholder='Sku'
+                                    type='text'
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name='photo'
+                        render={({ field: { value, onChange, ...fieldProps } }) => (
+                           <FormItem>
+                              <FormLabel>Foto</FormLabel>
+                              <FormControl>
+                                 <Input
+                                    type='file'
+                                    {...fieldProps}
+                                    accept="image/*"
+                                    onChange={(event) =>
+                                       onChange(event.target.files && event.target.files[0])
+                                    }
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name='categoryId'
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Kategori</FormLabel>
+                              <Select onValueChange={(value) => field.onChange(Number(value))}>
+                                 <SelectTrigger>
+                                    <SelectValue placeholder='Pilih kategori'>
+                                       {categoryName}
+                                    </SelectValue>
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    <SelectGroup>
+                                       <SelectLabel>Kategori</SelectLabel>
+                                       {categories.map((category) => (
+                                          <SelectItem value={category.id.toString()} key={category.id}>
+                                             {category.name}
+                                          </SelectItem>
+                                       ))}
+                                    </SelectGroup>
+                                 </SelectContent>
+                              </Select>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name='description'
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Deskripsi</FormLabel>
+                              <FormControl>
+                                 <Textarea
+                                    placeholder='Deskripsi'
+                                    {...field}
+                                 />
+                              </FormControl>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     {loading ? (
+                        <div className="flex justify-end max-w-xl py-3">
+                           <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
+                        </div>
+                     ) : (
+                        <div className="flex justify-end max-w-xl gap-x-2 py-3">
+                           <Button type="submit">Simpan</Button>
+                           <Link href='/product'><Button variant='secondary'>Kembali</Button></Link>
+                        </div>
+                     )}
+                  </form>
+               </Form>
+            </div>
+         </div>
       </div>
    )
 }

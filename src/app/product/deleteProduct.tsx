@@ -12,7 +12,8 @@ import {
    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import instanceClient from "@/lib/instanceClient"
+import { accessToken } from "@/lib/accessToken"
+import { baseURL } from "@/lib/baseUrl"
 import { useRouter } from "next/navigation"
 import { toast } from "react-toastify"
 
@@ -24,7 +25,12 @@ export default function DeleteProduct({ id }: Id) {
    const router = useRouter()
    const handleDelete = async () => {
       try {
-         const response = await instanceClient.delete(`/products/${id}`)
+         await fetch(`${baseURL}/products/${id}`, {
+            method: 'DELETE',
+            headers: {
+               'Authorization': `Bearer ${accessToken}`
+            }
+         })
          toast.success('Produk berhasil dihapus')
          router.refresh()
       } catch (error) {

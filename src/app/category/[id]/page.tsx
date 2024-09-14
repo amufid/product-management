@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { accessToken, baseURL } from "@/lib/accessToken";
+import { accessToken } from "@/lib/accessToken";
+import { baseURL } from "@/lib/baseUrl";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -65,23 +66,27 @@ export default function UpdateCategoryPage() {
    }
 
    return (
-      <div className="px-5 min-h-screen">
-         <h1 className="text-xl py-7">Edit kategori</h1>
-         <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Nama</Label>
-               <Input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-               />
-               {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl py-7">Edit kategori</h1>
+               <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Nama</Label>
+                     <Input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                     />
+                     {errors.name && <p className="text-xs text-red-500">{errors.name}</p>}
+                  </div>
+                  <div className="flex justify-end max-w-xl gap-x-2">
+                     <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">Simpan</Button>
+                     <Link href='/category'><Button variant='secondary'>Kembali</Button></Link>
+                  </div>
+               </form>
             </div>
-            <div className="flex justify-end max-w-xl gap-x-2">
-               <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">Simpan</Button>
-               <Link href='/category'><Button variant='secondary'>Kembali</Button></Link>
-            </div>
-         </form>
+         </div>
       </div>
    )
 }

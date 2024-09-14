@@ -11,14 +11,13 @@ import { currencyFormat } from "@/lib/currencyFormat";
 import DeleteProduct from "./deleteProduct";
 import { cookies } from "next/headers";
 import SearchProduct from "./searchProduct";
-import { baseURL } from "@/lib/accessToken";
+import { baseURL } from "@/lib/baseUrl";
 import PaginationProduct from "./paginationProduct";
 import { ButtonAddProduct, ButtonEditProduct } from "./buttonProduct";
 import { DataProduct } from "@/model/models";
 
-const accessToken = cookies().get('accessToken')?.value;
-
 async function getProducts(query: any) {
+   const accessToken = cookies().get('accessToken')?.value;
    let params: { [key: string]: any } = {
       page: query?.page || 1,
       name: query?.name || '',
@@ -58,46 +57,50 @@ export default async function ProductPage({ searchParams }: any) {
    const pages = result.paging
 
    return (
-      <div className="min-h-screen px-5">
-         <h1 className="text-xl font-semibold py-5">Daftar Produk</h1>
-         <div className="flex justify-between items-center mb-2">
-            <ButtonAddProduct />
-            <SearchProduct />
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl font-semibold pt-2 pb-5">Daftar Produk</h1>
+               <div className="flex justify-between items-center mb-2 gap-2">
+                  <ButtonAddProduct />
+                  <SearchProduct />
+               </div>
+               <Table>
+                  <TableHeader>
+                     <TableRow>
+                        <TableHead>Nama</TableHead>
+                        <TableHead>Foto product</TableHead>
+                        <TableHead>Harga</TableHead>
+                        <TableHead>Jumlah</TableHead>
+                        <TableHead>SKU</TableHead>
+                        <TableHead>Deskripsi</TableHead>
+                        <TableHead>Aksi</TableHead>
+                     </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                     {products.map((product) => (
+                        <TableRow key={product.id}>
+                           <TableCell className="font-medium">{product.name}</TableCell>
+                           <TableCell>
+                              {product.photo && <Image src={product.photo} alt="image" width={77} height={77} />}
+                           </TableCell>
+                           <TableCell>{currencyFormat(product.price)}</TableCell>
+                           <TableCell>{product.quantity}</TableCell>
+                           <TableCell>{product.sku}</TableCell>
+                           <TableCell>{product.description}</TableCell>
+                           <TableCell>
+                              <div className="flex flex-row gap-x-2">
+                                 <ButtonEditProduct {...product} />
+                                 <DeleteProduct id={product.id} />
+                              </div>
+                           </TableCell>
+                        </TableRow>
+                     ))}
+                  </TableBody>
+               </Table>
+               <PaginationProduct pages={pages} />
+            </div>
          </div>
-         <Table>
-            <TableHeader>
-               <TableRow>
-                  <TableHead>Nama</TableHead>
-                  <TableHead>Foto product</TableHead>
-                  <TableHead>Harga</TableHead>
-                  <TableHead>Jumlah</TableHead>
-                  <TableHead>SKU</TableHead>
-                  <TableHead>Deskripsi</TableHead>
-                  <TableHead>Aksi</TableHead>
-               </TableRow>
-            </TableHeader>
-            <TableBody>
-               {products.map((product) => (
-                  <TableRow key={product.id}>
-                     <TableCell className="font-medium">{product.name}</TableCell>
-                     <TableCell>
-                        {product.photo && <Image src={product.photo} alt="image" width={100} height={100} />}
-                     </TableCell>
-                     <TableCell>{currencyFormat(product.price)}</TableCell>
-                     <TableCell>{product.quantity}</TableCell>
-                     <TableCell>{product.sku}</TableCell>
-                     <TableCell>{product.description}</TableCell>
-                     <TableCell>
-                        <div className="flex flex-row gap-x-2">
-                           <ButtonEditProduct {...product} />
-                           <DeleteProduct id={product.id} />
-                        </div>
-                     </TableCell>
-                  </TableRow>
-               ))}
-            </TableBody>
-         </Table>
-         <PaginationProduct pages={pages} />
       </div>
    )
 }
