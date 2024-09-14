@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { accessToken, baseURL } from "@/lib/accessToken";
+import { accessToken } from "@/lib/accessToken";
+import { baseURL } from "@/lib/baseUrl";
 import { formSchemaUser } from "@/validation/validation";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
@@ -50,11 +51,11 @@ export default function UpdateCategoryPage() {
          })
 
          if (res.status === 200) {
-            toast.success('Kategori berhasil diperbarui')
+            toast.success('Profil berhasil diperbarui')
             router.push('/dashboard')
             router.refresh()
          } else {
-            toast.error('Ada kesalahan di server')
+            toast.error('Terjadi kesalahan!')
          }
       } catch (e) {
          if (e instanceof z.ZodError) {
@@ -71,32 +72,36 @@ export default function UpdateCategoryPage() {
    }
 
    return (
-      <div className="px-5 min-h-screen">
-         <h1 className="text-xl py-7">Edit profil</h1>
-         <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Username</Label>
-               <Input
-                  type="text"
-                  value={user.username}
-                  onChange={(e) => setUser({ ...user, username: e.target.value })}
-               />
-               {errors.username && <p className="text-xs text-red-500">{errors.username}</p>}
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl pt-2 pb-5">Edit profil</h1>
+               <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Username</Label>
+                     <Input
+                        type="text"
+                        value={user.username}
+                        onChange={(e) => setUser({ ...user, username: e.target.value })}
+                     />
+                     {errors.username && <p className="text-xs text-red-500">{errors.username}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Email</Label>
+                     <Input
+                        type="email"
+                        value={user.email}
+                        onChange={(e) => setUser({ ...user, email: e.target.value })}
+                     />
+                     {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
+                  </div>
+                  <div className="flex justify-end max-w-xl gap-x-2">
+                     <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">Simpan</Button>
+                     <Link href='/dashboard'><Button variant='secondary'>Kembali</Button></Link>
+                  </div>
+               </form>
             </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Email</Label>
-               <Input
-                  type="email"
-                  value={user.email}
-                  onChange={(e) => setUser({ ...user, email: e.target.value })}
-               />
-               {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
-            </div>
-            <div className="flex justify-end max-w-xl gap-x-2">
-               <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">Simpan</Button>
-               <Link href='/dashboard'><Button variant='secondary'>Kembali</Button></Link>
-            </div>
-         </form>
+         </div>
       </div>
    )
 }

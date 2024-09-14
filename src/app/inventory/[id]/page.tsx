@@ -17,7 +17,8 @@ import {
    SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@radix-ui/react-dropdown-menu"
-import { accessToken, baseURL } from "@/lib/accessToken"
+import { accessToken } from "@/lib/accessToken"
+import { baseURL } from "@/lib/baseUrl";
 import { SkeletonCard } from "@/components/skeleton"
 import { Product, Location } from "@/model/models"
 import MoonLoader from "react-spinners/MoonLoader";
@@ -93,7 +94,6 @@ export default function UpdateProduct() {
 
    useEffect(() => {
       const getLocation = async () => {
-         console.log(locationId)
          const response = await fetch(`${baseURL}/location/${locationId}`, {
             headers: {
                'Authorization': `Bearer ${accessToken}`
@@ -165,72 +165,76 @@ export default function UpdateProduct() {
    }
 
    return (
-      <div className="px-5 pb-10 min-h-screen">
-         <h1 className="text-xl py-7">Edit inventaris</h1>
-         <form onSubmit={handleSubmit} className="space-y-3 max-w-xl">
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Produk</Label>
-               <Select onValueChange={(value) => setProductId(Number(value))}>
-                  <SelectTrigger>
-                     <SelectValue placeholder={productName} >
-                        {productName}
-                     </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                     <SelectGroup>
-                        <SelectLabel>Pilih produk</SelectLabel>
-                        {products.map((product) => (
-                           <SelectItem value={String(product.id)} key={product.id} >
-                              {product.name}
-                           </SelectItem>
-                        ))}
-                     </SelectGroup>
-                  </SelectContent>
-               </Select>
-               {errors.productId && <p className="text-xs text-red-500">{errors.productId}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Kode lokasi</Label>
-               <Select onValueChange={(value) => setLocationId(Number(value))}>
-                  <SelectTrigger>
-                     <SelectValue placeholder={locationCode} >
-                        {locationCode}
-                     </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                     <SelectGroup>
-                        <SelectLabel>Pilih lokasi</SelectLabel>
-                        {locations.map((location) => (
-                           <SelectItem value={String(location.id)} key={location.id} >
-                              {location.code}
-                           </SelectItem>
-                        ))}
-                     </SelectGroup>
-                  </SelectContent>
-               </Select>
-               {errors.locationId && <p className="text-xs text-red-500">{errors.locationId}</p>}
-            </div>
-            <div className="grid w-full max-w-xl items-center gap-2">
-               <Label>Jumlah</Label>
-               <Input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-               />
-               {errors.quantity && <p className="text-xs text-red-500">{errors.quantity}</p>}
-            </div>
+      <div className="min-h-screen w-full">
+         <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
+            <div className="m-5">
+               <h1 className="text-xl pt-3 pb-5">Edit inventaris</h1>
+               <form onSubmit={handleSubmit} className="space-y-3 max-w-xl">
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Produk</Label>
+                     <Select onValueChange={(value) => setProductId(Number(value))}>
+                        <SelectTrigger>
+                           <SelectValue placeholder={productName} >
+                              {productName}
+                           </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectGroup>
+                              <SelectLabel>Pilih produk</SelectLabel>
+                              {products.map((product) => (
+                                 <SelectItem value={String(product.id)} key={product.id} >
+                                    {product.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectGroup>
+                        </SelectContent>
+                     </Select>
+                     {errors.productId && <p className="text-xs text-red-500">{errors.productId}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Kode lokasi</Label>
+                     <Select onValueChange={(value) => setLocationId(Number(value))}>
+                        <SelectTrigger>
+                           <SelectValue placeholder={locationCode} >
+                              {locationCode}
+                           </SelectValue>
+                        </SelectTrigger>
+                        <SelectContent>
+                           <SelectGroup>
+                              <SelectLabel>Pilih lokasi</SelectLabel>
+                              {locations.map((location) => (
+                                 <SelectItem value={String(location.id)} key={location.id} >
+                                    {location.code}
+                                 </SelectItem>
+                              ))}
+                           </SelectGroup>
+                        </SelectContent>
+                     </Select>
+                     {errors.locationId && <p className="text-xs text-red-500">{errors.locationId}</p>}
+                  </div>
+                  <div className="grid w-full max-w-xl items-center gap-2">
+                     <Label>Jumlah</Label>
+                     <Input
+                        type="number"
+                        value={quantity}
+                        onChange={(e) => setQuantity(Number(e.target.value))}
+                     />
+                     {errors.quantity && <p className="text-xs text-red-500">{errors.quantity}</p>}
+                  </div>
 
-            {loadingSubmit ? (
-               <div className="flex justify-end max-w-xl">
-                  <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
-               </div>
-            ) : (
-               <div className="flex justify-end max-w-xl gap-x-2">
-                  <Button type="submit">Simpan</Button>
-                  <Link href='/inventory'><Button variant='secondary'>Kembali</Button></Link>
-               </div>
-            )}
-         </form>
+                  {loadingSubmit ? (
+                     <div className="flex justify-end max-w-xl">
+                        <Button disabled><MoonLoader size={20} /><span className="ml-2">Menyimpan</span></Button>
+                     </div>
+                  ) : (
+                     <div className="flex justify-end max-w-xl gap-x-2">
+                        <Button type="submit">Simpan</Button>
+                        <Link href='/inventory'><Button variant='secondary'>Kembali</Button></Link>
+                     </div>
+                  )}
+               </form>
+            </div>
+         </div>
       </div>
    )
 }

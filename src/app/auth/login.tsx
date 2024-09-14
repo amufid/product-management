@@ -14,7 +14,7 @@ import {
    FormMessage,
 } from "@/components/ui/form";
 import { toast } from 'react-toastify';
-import { baseURL } from '@/lib/accessToken';
+import { baseURL } from "@/lib/baseUrl";
 import { useAuth } from '@/context/authContext';
 
 const formSchema = z.object({

@@ -24,7 +24,7 @@ export default function Chart() {
    }, []);
 
    return (
-      <>
+      <div className='p-4'>
          <CChart
             type="line"
             data={{
@@ -76,6 +76,6 @@ export default function Chart() {
                },
             }}
          />
-      </>
+      </div>
    )
 }
