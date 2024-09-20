@@ -6,6 +6,7 @@ import { baseURL } from "@/lib/baseUrl";
 import { cookies } from "next/headers"
 import { CountUpAnimation } from "@/components/dashboard/countUpAnimation";
 import Chart from "@/components/dashboard/chart";
+import LastTransactions from "@/components/dashboard/lastTransactions";
 
 async function getProductTotal() {
    const accessToken = cookies().get('accessToken')?.value;
@@ -129,12 +130,12 @@ export default async function Home() {
          </div>
          <div className="flex flex-col sm:flex-row gap-x-3">
             <div className="bg-slate-500 dark:bg-slate-950 rounded-sm w-full sm:w-[50rem] border">
-               <Chart />
+               <Chart transactionsData={transactions} />
             </div>
-            <div className="w-full sm:w-[30rem] h-[30rem] bg-slate-300 dark:bg-slate-950 rounded-sm border">
-
+            <div className="w-full sm:w-[30rem] bg-slate-300 dark:bg-slate-950 rounded-sm border">
+               <LastTransactions data={transactions} />
             </div>
          </div>
       </main>
-   );
+   )
 }
