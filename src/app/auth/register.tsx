@@ -58,13 +58,14 @@ export default function FormRegister() {
          })
 
          if (!res.ok) {
-            toast.error('Kesalahan server!')
+            toast.error('Terjadi kesalahan!')
+            return;
          }
 
          toast.success('Registrasi berhasil')
          setTimeout(() => { window.location.reload() }, 2000)
       } catch (error) {
-         toast.error('Kesalahan server!')
+         toast.error('Kesalahan server internal!')
       }
    }
 

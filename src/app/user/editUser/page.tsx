@@ -41,7 +41,7 @@ export default function UpdateCategoryPage() {
       event.preventDefault()
       try {
          formSchemaUser.parse(user)
-         const res = await fetch(`${baseURL}/user`, {
+         const response = await fetch(`${baseURL}/user`, {
             method: 'PUT',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -50,13 +50,14 @@ export default function UpdateCategoryPage() {
             body: JSON.stringify(user)
          })
 
-         if (res.status === 200) {
-            toast.success('Profil berhasil diperbarui')
-            router.push('/dashboard')
-            router.refresh()
-         } else {
+         if (!response.ok) {
             toast.error('Terjadi kesalahan!')
+            return;
          }
+
+         toast.success('Profil berhasil diperbarui')
+         router.push('/dashboard')
+         router.refresh()
       } catch (e) {
          if (e instanceof z.ZodError) {
             const errorMessage: Record<string, string> = {};
@@ -66,7 +67,7 @@ export default function UpdateCategoryPage() {
             })
             setErrors(errorMessage)
          } else {
-            console.log(e)
+            toast.error('Kesalahan server internal!')
          }
       }
    }

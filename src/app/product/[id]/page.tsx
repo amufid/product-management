@@ -55,7 +55,7 @@ export default function UpdateProduct() {
       sku: '',
       photo: '',
       categoryId: 0,
-      description: ''
+      description: '',
    })
 
    const router = useRouter()
@@ -139,7 +139,7 @@ export default function UpdateProduct() {
             data = { ...data, photo: imageUrl }
          }
 
-         const res = await fetch(`${baseURL}/products/${id}`, {
+         const response = await fetch(`${baseURL}/products/${id}`, {
             method: 'PUT',
             headers: {
                'Content-Type': 'application/json',
@@ -148,13 +148,14 @@ export default function UpdateProduct() {
             body: JSON.stringify(data)
          })
 
-         if (res.status === 200) {
-            toast.success('Product updated successful')
-            router.push('/product')
-            router.refresh()
-         } else {
-            toast.error('Something went wrong!')
+         if (!response.ok) {
+            toast.error('Terjadi kesalahan!')
+            return;
          }
+
+         toast.success('Product updated successful')
+         router.push('/product')
+         router.refresh()
       } catch (e) {
          if (e instanceof z.ZodError) {
             const errorMessage: Record<string, string> = {};
@@ -165,7 +166,7 @@ export default function UpdateProduct() {
 
             setErrors(errorMessage)
          } else {
-            console.log(e)
+            toast.error('Kesalahan server internal!')
          }
       } finally {
          setLoading(false)
@@ -260,7 +261,7 @@ export default function UpdateProduct() {
                      <Label>Deskripsi</Label>
                      <Textarea
                         value={product.description}
-                        onChange={(e) => setProduct({ ...product, description: e.target.value })}
+                        onChange={(e) => setProduct({ ...product, description: e.target.value.toString() })}
                      />
                      {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
                   </div>

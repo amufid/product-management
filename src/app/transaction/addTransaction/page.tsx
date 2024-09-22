@@ -51,7 +51,7 @@ export default function AddTransactionPage() {
    const onSubmit = async (values: FormSchema) => {
       setLoading(true)
       try {
-         await fetch(`${baseURL}/transaction`, {
+         const response = await fetch(`${baseURL}/transaction`, {
             method: 'POST',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -60,11 +60,20 @@ export default function AddTransactionPage() {
             body: JSON.stringify(values)
          })
 
+         if (!response.ok) {
+            if (response.status === 400) {
+               toast.error('Produk tidak cukup!')
+               return;
+            }
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
+
          toast.success('Transaksi berhasil dibuat')
          router.push('/transaction')
          router.refresh()
       } catch (error) {
-         console.log(error)
+         toast.error('Terjadi kesalahan di server!')
       } finally {
          setLoading(false)
       }

@@ -74,8 +74,13 @@ export default function AddProduct() {
 
       try {
          const imageUrl = await UploadImage(formData)
-         const setData = { ...values, photo: imageUrl || '' }
-         await fetch(`${baseURL}/products`, {
+         const setData = {
+            ...values,
+            photo: imageUrl || '',
+            description: values.description || ''
+         }
+
+         const response = await fetch(`${baseURL}/products`, {
             method: 'POST',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -83,11 +88,17 @@ export default function AddProduct() {
             },
             body: JSON.stringify(setData),
          })
+
+         if (!response.ok) {
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
+
          toast.success('Product created successful')
          router.push('/product')
          router.refresh()
       } catch (error) {
-         console.log(error)
+         toast.error('Kesalahan server internal!')
       } finally {
          setLoading(false)
       }

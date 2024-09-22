@@ -33,6 +33,9 @@ export class TransactionService {
          productQuantity = findProduct.quantity + createRequest.quantity;
 
       } else if (createRequest.type === 'OUT') {
+         if (createRequest.quantity > findProduct.quantity) {
+            throw new ResponseError(400, 'Quantity is greater than product quantity')
+         }
 
          productQuantity = findProduct.quantity - createRequest.quantity;
       }
@@ -152,6 +155,9 @@ export class TransactionService {
          let newQuantity = updateRequest.quantity - findTransaction.quantity
 
          if (updateRequest.type === 'OUT') {
+            if (newQuantity > findProduct.quantity) {
+               throw new ResponseError(400, 'Quantity is greater than product quantity')
+            }
 
             productQuantity = findProduct.quantity - newQuantity
 
@@ -166,6 +172,9 @@ export class TransactionService {
          let newQuantity = findTransaction.quantity - updateRequest.quantity
 
          if (updateRequest.type === 'OUT') {
+            if (newQuantity > findProduct.quantity) {
+               throw new ResponseError(400, 'Quantity is greater than product quantity')
+            }
 
             productQuantity = findProduct.quantity + newQuantity
 

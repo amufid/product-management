@@ -131,7 +131,7 @@ export default function UpdateProduct() {
       }
 
       try {
-         await fetch(`${baseURL}/inventory/${id}`, {
+         const response = await fetch(`${baseURL}/inventory/${id}`, {
             method: 'PUT',
             headers: {
                'Content-Type': 'application/json',
@@ -139,6 +139,11 @@ export default function UpdateProduct() {
             },
             body: JSON.stringify(data)
          })
+
+         if (!response.ok) {
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
 
          toast.success('Inventaris berhasil diperbarui')
          router.push('/inventory')
@@ -153,7 +158,7 @@ export default function UpdateProduct() {
 
             setErrors(errorMessage)
          } else {
-            console.log(e)
+            toast.error('Kesalahan server internal!')
          }
       } finally {
          setLoadingSubmit(false)

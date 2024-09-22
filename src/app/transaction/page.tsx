@@ -13,6 +13,7 @@ import { Transaction } from "@/model/models"
 import { cookies } from "next/headers"
 import { Product } from "@/model/models"
 import { ButtonAddTransaction, ButtonEditTransaction } from "./buttonTransaction"
+import PdfGenerator from "./pdfGenerator";
 
 async function getTransactions() {
    const accessToken = cookies().get('accessToken')?.value;
@@ -52,6 +53,7 @@ export default async function TransactionPage() {
                <h1 className="text-xl font-semibold pt-2 pb-5">Daftar Transaksi</h1>
                <div className="flex justify-between items-center mb-2">
                   <ButtonAddTransaction />
+                  <PdfGenerator transactions={transactions} products={products} />
                </div>
                <Table>
                   <TableHeader>
