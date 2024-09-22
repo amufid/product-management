@@ -48,7 +48,7 @@ export default function UpdateCategoryPage() {
       event.preventDefault()
       try {
          if (method === 'PATCH') {
-            const res = await fetch(`${baseURL}/user/approve`, {
+            const response = await fetch(`${baseURL}/user/approve`, {
                method: 'PATCH',
                headers: {
                   'Authorization': `Bearer ${accessToken}`,
@@ -60,14 +60,15 @@ export default function UpdateCategoryPage() {
                })
             })
 
-            if (!res.ok) {
+            if (!response.ok) {
                toast.error('Terjadi kesalahan!')
+               return;
             }
 
             toast.success('User berhasil disetujui')
             getUsers()
          } else if (method === 'DELETE') {
-            const res = await fetch(`${baseURL}/user`, {
+            const response = await fetch(`${baseURL}/user`, {
                method: 'DELETE',
                headers: {
                   'Authorization': `Bearer ${accessToken}`,
@@ -76,15 +77,16 @@ export default function UpdateCategoryPage() {
                body: JSON.stringify({ email: email })
             })
 
-            if (!res.ok) {
+            if (!response.ok) {
                toast.error('Terjadi kesalahan!')
+               return;
             }
 
             toast.success('User berhasil dihapus')
             getUsers()
          }
       } catch (e) {
-         toast.error('Terjadi kesalahan!')
+         toast.error('Kesalahan server internal!')
       }
    }
 

@@ -75,7 +75,7 @@ export default function EditTransactionPage() {
       try {
          formSchemaUpdateTransaction.parse(data)
 
-         await fetch(`${baseURL}/transaction/${id}`, {
+         const response = await fetch(`${baseURL}/transaction/${id}`, {
             method: 'PUT',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -83,6 +83,15 @@ export default function EditTransactionPage() {
             },
             body: JSON.stringify(data)
          })
+
+         if (!response.ok) {
+            if (response.status === 400) {
+               toast.error('Produk tidak cukup, tidak bisa diperbarui!')
+               return;
+            }
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
 
          toast.success('Transaksi berhasil diperbarui')
          router.push('/transaction')
@@ -97,7 +106,7 @@ export default function EditTransactionPage() {
 
             setErrors(errorMessage)
          } else {
-            console.log(e)
+            toast.error('Terjadi kesalahan!')
          }
       } finally {
          setLoading(false)

@@ -31,6 +31,9 @@ class TransactionService {
                 productQuantity = findProduct.quantity + createRequest.quantity;
             }
             else if (createRequest.type === 'OUT') {
+                if (createRequest.quantity > findProduct.quantity) {
+                    throw new responseError_1.ResponseError(400, 'Quantity is greater than product quantity');
+                }
                 productQuantity = findProduct.quantity - createRequest.quantity;
             }
             const productTotalPrice = findProduct.price * createRequest.quantity;
@@ -136,6 +139,9 @@ class TransactionService {
                 // jika quantity baru lebih besar 
                 let newQuantity = updateRequest.quantity - findTransaction.quantity;
                 if (updateRequest.type === 'OUT') {
+                    if (newQuantity > findProduct.quantity) {
+                        throw new responseError_1.ResponseError(400, 'Quantity is greater than product quantity');
+                    }
                     productQuantity = findProduct.quantity - newQuantity;
                 }
                 else if (updateRequest.type === 'IN') {
@@ -146,6 +152,9 @@ class TransactionService {
                 // jika quantity baru lebih kecil
                 let newQuantity = findTransaction.quantity - updateRequest.quantity;
                 if (updateRequest.type === 'OUT') {
+                    if (newQuantity > findProduct.quantity) {
+                        throw new responseError_1.ResponseError(400, 'Quantity is greater than product quantity');
+                    }
                     productQuantity = findProduct.quantity + newQuantity;
                 }
                 else if (updateRequest.type === 'IN') {

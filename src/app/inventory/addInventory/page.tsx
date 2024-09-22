@@ -51,7 +51,7 @@ export default function AddTransactionPage() {
    const onSubmit = async (values: FormSchema) => {
       setLoading(true)
       try {
-         await fetch(`${baseURL}/inventory`, {
+         const response = await fetch(`${baseURL}/inventory`, {
             method: 'POST',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -60,11 +60,16 @@ export default function AddTransactionPage() {
             body: JSON.stringify(values)
          })
 
+         if (!response.ok) {
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
+
          toast.success('Inventaris berhasil dibuat')
          router.push('/inventory')
          router.refresh()
       } catch (error) {
-         console.log(error)
+         toast.error('Kesalahan server internal!')
       } finally {
          setLoading(false)
       }

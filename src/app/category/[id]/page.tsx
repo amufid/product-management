@@ -40,7 +40,7 @@ export default function UpdateCategoryPage() {
          const data = { name }
          formSchema.parse(data)
 
-         await fetch(`${baseURL}/categories/${id}`, {
+         const response = await fetch(`${baseURL}/categories/${id}`, {
             method: 'PUT',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -48,6 +48,12 @@ export default function UpdateCategoryPage() {
             },
             body: JSON.stringify(data)
          })
+
+         if (!response.ok) {
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
+
          toast.success('Kategori berhasil diperbarui')
          router.push('/category')
          router.refresh()
@@ -60,7 +66,7 @@ export default function UpdateCategoryPage() {
             })
             setErrors(errorMessage)
          } else {
-            console.log(e)
+            toast.error('Kesalahan server internal!')
          }
       }
    }

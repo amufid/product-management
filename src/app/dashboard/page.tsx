@@ -129,8 +129,8 @@ export default async function Home() {
             </div>
          </div>
          <div className="flex flex-col sm:flex-row gap-x-3">
-            <div className="bg-slate-500 dark:bg-slate-950 rounded-sm w-full sm:w-[50rem] border">
-               <Chart transactionsData={transactions} />
+            <div className="bg-slate-300 dark:bg-slate-950 rounded-sm w-full sm:w-[50rem] border">
+               <Chart transactions={transactions} />
             </div>
             <div className="w-full sm:w-[30rem] bg-slate-300 dark:bg-slate-950 rounded-sm border">
                <LastTransactions data={transactions} />

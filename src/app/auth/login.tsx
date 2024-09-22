@@ -56,11 +56,9 @@ export default function AuthPage() {
             login({ user: data.username }, data.accessToken)
             toast.success('Login successful')
             window.location.href = '/dashboard'
-         } else {
-            toast.error('Email atau password salah!');
          }
       } catch (error) {
-         toast.error(`${error}`)
+         toast.error('Kesalahan server internal!')
       }
    }
 

@@ -38,7 +38,7 @@ export default function AddCategoryPage() {
    const onSubmit = async (values: FormSchema) => {
       setLoading(true)
       try {
-         await fetch(`${baseURL}/categories`, {
+         const response = await fetch(`${baseURL}/categories`, {
             method: 'POST',
             headers: {
                'Authorization': `Bearer ${accessToken}`,
@@ -46,11 +46,17 @@ export default function AddCategoryPage() {
             },
             body: JSON.stringify(values),
          })
+
+         if (!response.ok) {
+            toast.error('Terjadi kesalahan!')
+            return;
+         }
+
          toast.success('Kategori berhasil dibuat')
          router.push('/category')
          router.refresh()
       } catch (error) {
-         console.log(error)
+         toast.error('Kesalahan server internal!')
       } finally {
          setLoading(false)
       }

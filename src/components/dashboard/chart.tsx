@@ -1,7 +1,7 @@
 'use client'
 
 import { CChart, } from '@coreui/react-chartjs'
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getYears } from '@/lib/getYears';
 import {
    Select,
@@ -12,20 +12,23 @@ import {
    SelectTrigger,
    SelectValue,
 } from "@/components/ui/select";
+import { Transaction } from '@/model/models';
+import { useTheme } from "next-themes"
 
-type Transactions = { transactionsData: [] }
+interface TransactionType {
+   month: string;
+   quantity: number;
+}
 
-export default function Chart(transactionsData: Transactions) {
-   const [typeIn, setTypeIn] = useState<{ [key: string]: Array<{ type: string, createdAt: string }> }>({});
-   const [typeOut, setTypeOut] = useState<{ [key: string]: Array<{ type: string, createdAt: string }> }>({});
-   const [quantityIn, setQuantityIn] = useState<number[]>([]);
-   const [quantityOut, setQuantityOut] = useState<number[]>([]);
+export default function Chart({ transactions }: { transactions: Transaction[] }) {
    const [labelColor, setLabelColor] = useState('#000'); // Default label color
    const [gridColor, setGridColor] = useState('#e0e0e0'); // Default grid color
    const [tickColor, setTickColor] = useState('#000'); // Default tick color
+   const [quantityIn, setQuantityIn] = useState<number[]>([]);
+   const [quantityOut, setQuantityOut] = useState<number[]>([]);
    const [years, setYears] = useState(getYears())
-   const [chooseYear, setChooseYear] = useState('')
-   const [transactions, setTransactions] = useState<[]>(transactionsData.transactionsData)
+   const [chooseYear, setChooseYear] = useState<number>(0)
+   const { theme } = useTheme();
 
    const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
@@ -36,66 +39,28 @@ export default function Chart(transactionsData: Transactions) {
             return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
          };
 
-         // Fetch and set the CSS variable colors
+         if (theme === 'dark') {
+            setGridColor(getStyle('--grid-color') || 'white'); // Warna grid untuk tema dark
+         } else {
+            setGridColor(getStyle('--grid-color') || 'black'); // Warna grid untuk tema light
+         }
          setLabelColor(getStyle('--cui-white') || '#000');
-         setGridColor(getStyle('--cui-gray-100') || '#e0e0e0');
          setTickColor(getStyle('--cui-gray-100') || '#000');
       }
-   }, []);
+   }, [theme, gridColor]);
 
-   const getYear = (dateString: string) => {
-      let year = chooseYear ? chooseYear : dateString
-      const date = new Date(year.toString())
-      return date.getFullYear().toString();
-   }
+   const filterYear = transactions.filter((item) => {
+      const currentYear = new Date(item.createdAt).getFullYear()
+      return chooseYear ? currentYear === chooseYear : currentYear === currentYear;
+   })
 
-   const groupByYear = (data: Array<{ createdAt: string }>) => {
-      const filterData = data.reduce((acc, item) => {
-         let currentYear = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(new Date(item.createdAt))
-         let year = getYear(item.createdAt);
-         // Lewati data ini, tidak cocok dengan tahun yang dipilih
-         if (chooseYear && year !== currentYear) {
-            return acc;
-         }
-         if (!acc[year]) {
-            acc[year] = [];
-         }
+   const filterTypeIn = filterYear.filter((data) => {
+      return data.type === "IN"
+   })
 
-         acc[year].push(item);
-         return acc;
-      }, {} as { [key: string]: Array<{ createdAt: string }> });
-
-      return Object.values(filterData).flat();
-   }
-
-   const groupByType = (data: Array<{ type: string }>, type: string) => {
-      if (type === 'type_in') {
-         return data.reduce((acc, item) => {
-            if (item.type === "IN") {
-               // Jika belum ada array untuk 'IN', inisialisasi dengan array kosong
-               if (!acc['in']) {
-                  acc['in'] = [];
-               }
-               acc['in'].push(item);
-            }
-            return acc;
-         }, {} as {
-            [key: string]: Array<{ type: string }>
-         });
-      } else {
-         return data.reduce((acc, item) => {
-            if (item.type === "OUT") {
-               if (!acc['out']) {
-                  acc['out'] = [];
-               }
-               acc['out'].push(item);
-            }
-            return acc;
-         }, {} as {
-            [key: string]: Array<{ type: string }>
-         });
-      }
-   }
+   const filterTypeOut = filterYear.filter((data) => {
+      return data.type === "OUT"
+   })
 
    const getMonth = (dateString: string) => {
       const date = new Date(dateString);
@@ -115,64 +80,44 @@ export default function Chart(transactionsData: Transactions) {
       }, {} as { [key: string]: Array<{ createdAt: string }> });
    }
 
-   useEffect(() => {
-      const getData = () => {
-         const filterYear: any = groupByYear(transactions)
-         const dataIn: any = groupByType(filterYear, 'type_in')
-         const dataOut: any = groupByType(filterYear, 'type_out')
-         const groupIn: any = groupByMonth(dataIn.in)
-         const groupOut: any = groupByMonth(dataOut.out)
+   const typeIn: any = groupByMonth(filterTypeIn)
+   const typeOut: any = groupByMonth(filterTypeOut)
 
-         setTypeIn(groupIn)
-         setTypeOut(groupOut)
-      }
-      getData()
-   }, [chooseYear, transactions])
+   const transactionIn: TransactionType[] = Object.keys(typeIn).map((key) => ({
+      month: key,
+      quantity: typeIn[key].length,
+   }));
 
-   const transactionIn = [{ mounth: '', quantity: 0 }]
-   const transactionOut = [{ mounth: '', quantity: 0 }]
-
-   for (let i in typeIn) {
-      if (typeIn.hasOwnProperty(i)) {
-         transactionIn.push({ mounth: i, quantity: typeIn[i].length })
-      }
-   }
-
-   for (let i in typeOut) {
-      if (typeOut.hasOwnProperty(i)) {
-         transactionOut.push({ mounth: i, quantity: typeOut[i].length })
-      }
-   }
+   // Membuat array baru untuk transactionOut
+   const transactionOut: TransactionType[] = Object.keys(typeOut).map((key) => ({
+      month: key,
+      quantity: typeOut[key].length,
+   }));
 
    useEffect(() => {
-      const getQuantity = () => {
-         const totalIn = []
-         const totalOut = []
+      const totalIn = labels.map(label => {
+         const foundData = transactionIn.find((data) => data.month === label);
+         return foundData?.quantity ?? 0;
+      });
 
-         for (const label of labels) {
-            const foundData = transactionIn.find((data) => data.mounth === label);
-            totalIn.push(foundData?.quantity ?? 0);
-         }
-
-         for (const label of labels) {
-            const foundData = transactionOut.find((data) => data.mounth === label);
-            totalOut.push(foundData?.quantity ?? 0);
-         }
+      const totalOut = labels.map(label => {
+         const foundData = transactionOut.find((data) => data.month === label);
+         return foundData?.quantity ?? 0;
+      });
+      // Hanya update state jika array berbeda
+      if (JSON.stringify(totalIn) !== JSON.stringify(quantityIn)) {
          setQuantityIn(totalIn);
+      }
+
+      if (JSON.stringify(totalOut) !== JSON.stringify(quantityOut)) {
          setQuantityOut(totalOut);
       }
-
-      const interval = setInterval(() => {
-         getQuantity();
-      }, 1500)
-
-      return () => clearInterval(interval);
-   }, [transactionIn, transactionOut])
+   }, [transactionIn, transactionOut]);
 
    return (
-      <div className='px-4 py-2 border'>
+      <div className='px-4 py-2'>
          <div className='w-32 mt-2'>
-            <Select onValueChange={(value) => setChooseYear(value)}>
+            <Select onValueChange={(value) => setChooseYear(Number(value))}>
                <SelectTrigger>
                   <SelectValue placeholder='Pilih tahun'>
                      {chooseYear}
@@ -218,7 +163,7 @@ export default function Chart(transactionsData: Transactions) {
                plugins: {
                   legend: {
                      labels: {
-                        color: labelColor,
+                        color: gridColor,
                      }
                   }
                },
@@ -228,7 +173,7 @@ export default function Chart(transactionsData: Transactions) {
                         color: gridColor,
                      },
                      ticks: {
-                        color: tickColor,
+                        color: gridColor,
                      },
                   },
                   y: {
@@ -236,7 +181,7 @@ export default function Chart(transactionsData: Transactions) {
                         color: gridColor,
                      },
                      ticks: {
-                        color: tickColor,
+                        color: gridColor,
                      },
                   },
                },
