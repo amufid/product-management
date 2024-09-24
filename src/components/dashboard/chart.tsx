@@ -1,7 +1,7 @@
 'use client'
 
 import { CChart, } from '@coreui/react-chartjs'
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getYears } from '@/lib/getYears';
 import {
    Select,
@@ -104,6 +104,7 @@ export default function Chart({ transactions }: { transactions: Transaction[] })
          const foundData = transactionOut.find((data) => data.month === label);
          return foundData?.quantity ?? 0;
       });
+     
       // Hanya update state jika array berbeda
       if (JSON.stringify(totalIn) !== JSON.stringify(quantityIn)) {
          setQuantityIn(totalIn);
