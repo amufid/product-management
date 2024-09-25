@@ -9,6 +9,7 @@ import {
 import { baseURL } from "@/lib/baseUrl";
 import { User } from "@/model/models";
 import { cookies } from "next/headers";
+import { Badge } from "@/components/ui/badge"
 
 async function getUsers() {
    const accessToken = cookies().get('accessToken')?.value;
@@ -38,6 +39,7 @@ export default async function UserPage() {
                         <TableHead>Nama</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
                      </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -46,6 +48,7 @@ export default async function UserPage() {
                            <TableCell>{user.username}</TableCell>
                            <TableCell>{user.email}</TableCell>
                            <TableCell>{user.role}</TableCell>
+                           <TableCell>{user.approved === true ? <Badge>Aktif</Badge> : <Badge variant='secondary'>Pending</Badge>}</TableCell>
                         </TableRow>
                      ))}
                   </TableBody>

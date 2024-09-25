@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { FaUserCheck } from "react-icons/fa";
 import { useAuth } from "@/context/authContext";
+import { IoStorefront } from "react-icons/io5";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 export default function Sidebar({ children, }: Readonly<{ children: React.ReactNode }>) {
    const { state } = useAuth()
@@ -58,12 +60,18 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
       },
       {
          id: 6,
+         route: '/destination',
+         icon: <IoStorefront />,
+         title: 'Tujuan pengiriman'
+      },
+      {
+         id: 7,
          route: '/user',
          icon: <HiUsers />,
          title: 'Pengguna'
       },
       {
-         id: 7,
+         id: 8,
          route: '/user/approve',
          icon: <FaUserCheck />,
          title: 'Permintaan user'
@@ -149,7 +157,10 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
                         </div>
 
                         <DropdownMenu>
-                           <DropdownMenuTrigger className="px-3 hover:text-emerald-500">{state.user}</DropdownMenuTrigger>
+                           <DropdownMenuTrigger className="px-3 hover:text-emerald-500">
+                              <span className="flex sm:hidden text-3xl"><GiHamburgerMenu /></span>
+                              <span className="hidden sm:flex">{state.user}</span>
+                           </DropdownMenuTrigger>
                            <DropdownMenuContent>
                               <DropdownMenuLabel>{state.user}</DropdownMenuLabel>
                               <DropdownMenuSeparator />

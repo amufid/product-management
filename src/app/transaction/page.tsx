@@ -14,6 +14,7 @@ import { cookies } from "next/headers"
 import { Product } from "@/model/models"
 import { ButtonAddTransaction, ButtonEditTransaction } from "./buttonTransaction"
 import PdfGenerator from "./pdfGenerator";
+import { Badge } from "@/components/ui/badge"
 
 async function getTransactions() {
    const accessToken = cookies().get('accessToken')?.value;
@@ -74,7 +75,7 @@ export default async function TransactionPage() {
                            </TableCell>
                            <TableCell>{transaction.quantity}</TableCell>
                            <TableCell>{currencyFormat(transaction.totalPrice)}</TableCell>
-                           <TableCell>{transaction.type}</TableCell>
+                           <TableCell>{transaction.type === 'IN' ? <Badge>IN</Badge> : <Badge variant='secondary'>OUT</Badge>}</TableCell>
                            <TableCell>{convertDate(transaction.createdAt)}</TableCell>
                            <TableCell>
                               <div className="flex flex-row gap-x-2">

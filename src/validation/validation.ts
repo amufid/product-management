@@ -45,3 +45,8 @@ export const formSchemaUser = z.object({
    username: z.string().min(3, 'Nama minimal 3 karakter'),
    email: z.string().min(5, 'Email minimal 5 karakter'),
 })
+
+export const formSchemaDestination = z.object({
+   name: z.string().min(3, 'Nama minimal 3 karakter'),
+   address: z.string().min(10, 'Alamat minimal 10 karakter'),
+})
