@@ -63,6 +63,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       dispatch({ type: 'LOGOUT' })
       Cookies.remove('accessToken')
       Cookies.remove('user')
+      localStorage.removeItem('activePage')
    }
 
    const accessToken = Cookies.get('accessToken')

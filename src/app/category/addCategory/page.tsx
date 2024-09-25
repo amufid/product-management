@@ -63,7 +63,7 @@ export default function AddCategoryPage() {
    }
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl py-3">Tambah kategori</h1>

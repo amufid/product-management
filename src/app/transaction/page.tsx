@@ -48,7 +48,7 @@ export default async function TransactionPage() {
    const [transactions, products] = await Promise.all([transactionsData, productsData])
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl font-semibold pt-2 pb-5">Daftar Transaksi</h1>

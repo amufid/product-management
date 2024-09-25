@@ -1,16 +1,8 @@
 'use client'
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { RiShoppingBag4Fill } from "react-icons/ri";
-import { BiSolidCategory } from "react-icons/bi";
-import { MdImportExport } from "react-icons/md";
-import { MdInventory } from "react-icons/md";
-import { HiUsers } from "react-icons/hi";
 import { ModeToggle } from "./toggle-theme";
-import { MdSpaceDashboard } from "react-icons/md";
-import { useEffect, useRef } from "react";
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+import { useEffect, useRef, useState } from "react";
 import LogoutButton from "./logoutButton";
 import {
    DropdownMenu,
@@ -20,77 +12,17 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { FaUserCheck } from "react-icons/fa";
 import { useAuth } from "@/context/authContext";
-import { IoStorefront } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { items } from "./sidebarItem";
+import path from "path";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar({ children, }: Readonly<{ children: React.ReactNode }>) {
    const { state } = useAuth()
-   const items = [
-      {
-         id: 1,
-         route: '/dashboard',
-         icon: <MdSpaceDashboard />,
-         title: 'Dashboard'
-      },
-      {
-         id: 2,
-         route: '/product',
-         icon: <RiShoppingBag4Fill />,
-         title: 'Produk'
-      },
-      {
-         id: 3,
-         route: '/category',
-         icon: <BiSolidCategory />,
-         title: 'Kategori'
-      },
-      {
-         id: 4,
-         route: '/transaction',
-         icon: <MdImportExport />,
-         title: 'Transaksi'
-      },
-      {
-         id: 5,
-         route: '/inventory',
-         icon: <MdInventory />,
-         title: 'Inventaris'
-      },
-      {
-         id: 6,
-         route: '/destination',
-         icon: <IoStorefront />,
-         title: 'Tujuan pengiriman'
-      },
-      {
-         id: 7,
-         route: '/user',
-         icon: <HiUsers />,
-         title: 'Pengguna'
-      },
-      {
-         id: 8,
-         route: '/user/approve',
-         icon: <FaUserCheck />,
-         title: 'Permintaan user'
-      },
-   ]
-
-   const pathname = usePathname();
-   const routes = items.map(item => item.route)
-
-   // sidebar tidak ditampilkan 
-   if (pathname.includes("/auth")) {
-      return <div>{children}</div>
-   }
-
-   if (!routes.some(route => pathname.includes(route))) {
-      return <div>{children}</div>
-   }
-
+   const [activePage, setActivePage] = useState<string>('')
    const leftDivRef = useRef<HTMLDivElement>(null);
+   const pathname = usePathname()
 
    // function untuk menghilangkan scroll ketika cursor berada di bagian kiri page
    useEffect(() => {
@@ -111,6 +43,27 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
       }
    }, [])
 
+   useEffect(() => {
+      const page = localStorage.getItem('activePage') || 'Dashboard';
+      setActivePage(page)
+   }, [])
+
+   const handleActivePage = (title: string) => {
+      setActivePage(title)
+      localStorage.setItem('activePage', title)
+   }
+
+   const routes = items.map(item => item.route)
+
+   // sidebar tidak ditampilkan 
+   if (!routes.some(route => pathname.includes(route))) {
+      return <div>{children}</div>
+   }
+
+   if (pathname.includes('/auth')) {
+      return <div>{children}</div>
+   }
+
    return (
       <div className="min-h-screen w-full rounded-lg border">
          <div className="flex flex-row justify-between">
@@ -127,8 +80,10 @@ export default function Sidebar({ children, }: Readonly<{ children: React.ReactN
                      <ul>
                         {items.map((item) => (
                            <div key={item.id}>
-                              <Link href={item.route} >
-                                 <li className="w-full flex items-center py-3 px-5 dark:hover:bg-slate-800 hover:bg-slate-100 mb-1 rounded-sm">
+                              <Link href={item.route}>
+                                 <li
+                                    onClick={() => handleActivePage(item.title)}
+                                    className={`${activePage === item.title ? 'bg-slate-100 dark:bg-slate-800 bg-opacity-50' : ''}w-full flex items-center py-3 px-5 dark:hover:bg-slate-800 hover:bg-slate-100 mb-1 rounded-sm`}>
                                     {item.icon}
                                     <span className="ml-3">{item.title}</span>
                                  </li>

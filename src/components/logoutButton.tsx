@@ -15,7 +15,7 @@ export default function LogoutButton() {
 
    return (
       <div className="w-full hover:bg-red-500 flex justify-start p-1 rounded-sm">
-         <button onClick={() => { handleLogout() }}>Logout</button>
+         <button onClick={() => handleLogout()}>Logout</button>
       </div>
    )
 }

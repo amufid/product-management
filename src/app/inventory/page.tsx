@@ -11,7 +11,6 @@ import convertDate from "@/lib/convertDate";
 import { Inventory, Location, Product } from "@/model/models";
 import { cookies } from "next/headers"
 import {
-   ButtonAddLocation,
    ButtonAddInventory,
    ButtonEditInventory
 } from "./buttonInventory";
@@ -68,12 +67,11 @@ export default async function InventoryPage() {
    ])
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl font-semibold pt-2 pb-5">Daftar Inventaris</h1>
                <div className="flex items-center mb-2 gap-x-2">
-                  <ButtonAddLocation />
                   <ButtonAddInventory />
                </div>
                <Table>

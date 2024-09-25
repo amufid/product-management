@@ -21,6 +21,7 @@ import { baseURL } from "@/lib/baseUrl";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { formSchemaLocation } from "@/validation/validation";
+import { Textarea } from "@/components/ui/textarea";
 
 type FormSchema = z.infer<typeof formSchemaLocation>
 
@@ -50,7 +51,7 @@ export default function AddTransactionPage() {
          }
 
          toast.success('Lokasi berhasil dibuat')
-         router.push('/inventory')
+         router.push('/location')
          router.refresh()
       } catch (error) {
          toast.error('Kesalahan server internal!')
@@ -60,7 +61,7 @@ export default function AddTransactionPage() {
    }
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl pt-3 pb-5">Buat lokasi</h1>
@@ -91,9 +92,8 @@ export default function AddTransactionPage() {
                            <FormItem>
                               <FormLabel>Deskripsi</FormLabel>
                               <FormControl>
-                                 <Input
+                                 <Textarea
                                     placeholder='Deskripsi'
-                                    type='text'
                                     {...field}
                                     onChange={(e) => field.onChange(e.target.value)}
                                  />
@@ -109,7 +109,7 @@ export default function AddTransactionPage() {
                      ) : (
                         <div className="flex justify-end max-w-xl gap-x-2">
                            <Button type="submit">Simpan</Button>
-                           <Link href='/inventory'><Button variant='secondary'>Kembali</Button></Link>
+                           <Link href='/location'><Button variant='secondary'>Kembali</Button></Link>
                         </div>
                      )}
                   </form>

@@ -170,7 +170,7 @@ export default function UpdateProduct() {
    }
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl pt-3 pb-5">Edit inventaris</h1>
