@@ -57,7 +57,7 @@ export default async function ProductPage({ searchParams }: any) {
    const pages = result.paging
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl font-semibold pt-2 pb-5">Daftar Produk</h1>

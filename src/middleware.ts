@@ -12,6 +12,8 @@ export function middleware(request: NextRequest) {
          '/transaction',
          '/inventory',
          '/user',
+         '/destination',
+         '/location',
          '/',
       ]
 
@@ -28,6 +30,6 @@ export const config = {
    matcher: [
       '/',
       '/dashboard/:path*',
-      '/(product|category|transaction|inventory|user)/:path*', // Proteksi route yang di-matching dengan pola ini
+      '/(product|category|transaction|inventory|user|destination|location)/:path*', // Proteksi route yang di-matching dengan pola ini
    ],
 }

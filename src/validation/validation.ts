@@ -31,8 +31,8 @@ export const formSchemaUpdateTransaction = z.object({
 })
 
 export const formSchemaLocation = z.object({
-   code: z.string().min(1, 'Kode minimal 1'),
-   description: z.string().min(3, 'Deskripsi minimal 1')
+   code: z.string().min(3, 'Kode minimal 3 karakter'),
+   description: z.string().min(5, 'Deskripsi minimal 5 karakter'),
 })
 
 export const formSchemaInventory = z.object({

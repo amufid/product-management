@@ -61,10 +61,10 @@ export default function AddDestinationPage() {
    }
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="sm:w-[30rem] m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
             <div className="m-5">
-               <h1 className="text-xl pt-3 pb-5">Buat lokasi</h1>
+               <h1 className="text-xl pt-3 pb-5">Buat tujuan pengiriman</h1>
                <Form {...form}>
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-xl">
                      <FormField

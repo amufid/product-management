@@ -121,7 +121,7 @@ export default function AddProduct() {
    }, [categoryName])
 
    return (
-      <div className="min-h-screen w-full">
+      <div className="w-full">
          <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[35rem] border rounded-sm">
             <div className="m-5">
                <h1 className="text-xl pt-2 pb-5">Tambah produk</h1>
