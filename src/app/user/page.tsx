@@ -58,6 +58,9 @@ export default async function UserPage() {
               ))}
             </TableBody>
           </Table>
+          {users.length === 0 && (
+            <p className="text-center pt-3">Tidak ada data</p>
+          )}
         </div>
       </div>
     </div>
