@@ -109,64 +109,57 @@ export default function UpdateCategoryPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {findUserApprove.length >= 1 ? (
-                findUserApprove.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-x-2">
-                        <Button
-                          type="submit"
-                          onClick={(event) =>
-                            handleSubmit(event, String(user.email), "PATCH")
-                          }
-                          className="bg-emerald-600 hover:bg-emerald-500 text-white"
-                        >
-                          Konfirmasi
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="destructive">Hapus</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent className="max-w-sm">
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>
-                                Apakah yakin hapus{" "}
-                                <span className="font-bold">{user.email}</span>?
-                              </AlertDialogTitle>
-                              <AlertDialogDescription></AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Batal</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={(event) =>
-                                  handleSubmit(
-                                    event,
-                                    String(user.email),
-                                    "DELETE"
-                                  )
-                                }
-                              >
-                                Hapus
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
+              {findUserApprove.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <div className="rounded-full p-1 bg-[#f1030349] w-[12rem] text-center">
-                      <p>Tidak ada permintaan</p>
+                    <div className="flex gap-x-2">
+                      <Button
+                        type="submit"
+                        onClick={(event) =>
+                          handleSubmit(event, String(user.email), "PATCH")
+                        }
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                      >
+                        Konfirmasi
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive">Hapus</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="max-w-sm">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Apakah yakin hapus{" "}
+                              <span className="font-bold">{user.email}</span>?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription></AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Batal</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={(event) =>
+                                handleSubmit(
+                                  event,
+                                  String(user.email),
+                                  "DELETE"
+                                )
+                              }
+                            >
+                              Hapus
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>
-              )}
+              ))}
             </TableBody>
           </Table>
+          {findUserApprove.length === 0 && (
+            <p className="text-center pt-3">Tidak ada data</p>
+          )}
         </div>
       </div>
     </div>

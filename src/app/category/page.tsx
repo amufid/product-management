@@ -64,6 +64,9 @@ export default async function CategoryPage() {
               ))}
             </TableBody>
           </Table>
+          {categories.length === 0 && (
+            <p className="text-center pt-3">Tidak ada kategori</p>
+          )}
         </div>
       </div>
     </div>

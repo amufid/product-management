@@ -115,7 +115,10 @@ export default async function ProductPage({ searchParams }: any) {
               ))}
             </TableBody>
           </Table>
-          <PaginationProduct pages={pages} />
+          {products.length === 0 && (
+            <p className="text-center pt-3">Tidak ada produk</p>
+          )}
+          {products.length > 10 && <PaginationProduct pages={pages} />}
         </div>
       </div>
     </div>

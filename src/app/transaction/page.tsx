@@ -112,6 +112,9 @@ export default async function TransactionPage() {
               ))}
             </TableBody>
           </Table>
+          {transactions.length === 0 && (
+            <p className="text-center pt-3">Tidak ada transaksi</p>
+          )}
         </div>
       </div>
     </div>
