@@ -74,13 +74,13 @@ export default function Chart({
       : currentYear === currentYear;
   });
 
-  const filterTypeIn = filterYear.filter((data) => {
-    return data.type === "IN";
-  });
+  // const filterTypeIn = filterYear.filter((data) => {
+  //   return data.type === "IN";
+  // });
 
-  const filterTypeOut = filterYear.filter((data) => {
-    return data.type === "OUT";
-  });
+  // const filterTypeOut = filterYear.filter((data) => {
+  //   return data.type === "OUT";
+  // });
 
   const getMonth = (dateString: string) => {
     const date = new Date(dateString);
@@ -100,13 +100,14 @@ export default function Chart({
     }, {} as { [key: string]: Array<{ createdAt: string }> });
   };
 
-  const typeIn: any = groupByMonth(filterTypeIn);
-  const typeOut: any = groupByMonth(filterTypeOut);
+  // const typeIn: any = groupByMonth(filterTypeIn);
+  // const typeOut: any = groupByMonth(filterTypeOut);
+  const typeOut: any = groupByMonth(filterYear);
 
-  const transactionIn: TransactionType[] = Object.keys(typeIn).map((key) => ({
-    month: key,
-    quantity: typeIn[key].length,
-  }));
+  // const transactionIn: TransactionType[] = Object.keys(typeIn).map((key) => ({
+  //   month: key,
+  //   quantity: typeIn[key].length,
+  // }));
 
   // Membuat array baru untuk transactionOut
   const transactionOut: TransactionType[] = Object.keys(typeOut).map((key) => ({
@@ -115,10 +116,10 @@ export default function Chart({
   }));
 
   useEffect(() => {
-    const totalIn = labels.map((label) => {
-      const foundData = transactionIn.find((data) => data.month === label);
-      return foundData?.quantity ?? 0;
-    });
+    // const totalIn = labels.map((label) => {
+    //   const foundData = transactionIn.find((data) => data.month === label);
+    //   return foundData?.quantity ?? 0;
+    // });
 
     const totalOut = labels.map((label) => {
       const foundData = transactionOut.find((data) => data.month === label);
@@ -126,14 +127,14 @@ export default function Chart({
     });
 
     // Hanya update state jika array berbeda
-    if (JSON.stringify(totalIn) !== JSON.stringify(quantityIn)) {
-      setQuantityIn(totalIn);
-    }
+    // if (JSON.stringify(totalIn) !== JSON.stringify(quantityIn)) {
+    //   setQuantityIn(totalIn);
+    // }
 
     if (JSON.stringify(totalOut) !== JSON.stringify(quantityOut)) {
       setQuantityOut(totalOut);
     }
-  }, [transactionIn, transactionOut]);
+  }, [transactionOut]);
 
   return (
     <div className="px-4 py-2">
@@ -160,16 +161,16 @@ export default function Chart({
         data={{
           labels: labels,
           datasets: [
+            // {
+            //   label: "Produk masuk",
+            //   backgroundColor: "rgba(220, 220, 220, 0.2)",
+            //   borderColor: "rgba(0,0,255)",
+            //   pointBackgroundColor: "rgba(220, 220, 220, 1)",
+            //   pointBorderColor: "#fff",
+            //   data: quantityIn,
+            // },
             {
-              label: "Produk masuk",
-              backgroundColor: "rgba(220, 220, 220, 0.2)",
-              borderColor: "rgba(0,0,255)",
-              pointBackgroundColor: "rgba(220, 220, 220, 1)",
-              pointBorderColor: "#fff",
-              data: quantityIn,
-            },
-            {
-              label: "Produk keluar",
+              label: "Transaksi penjualan",
               backgroundColor: "rgba(151, 187, 205, 0.2)",
               borderColor: "rgba(50,205,50)",
               pointBackgroundColor: "rgba(151, 187, 205, 1)",

@@ -1,16 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import MoonLoader from "react-spinners/MoonLoader";
 import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -23,26 +13,23 @@ import { formSchemaUpdateTransaction } from "@/validation/validation";
 import { Label } from "@radix-ui/react-dropdown-menu";
 
 export default function EditTransactionPage() {
-  const [loading, setLoading] = useState(false);
-  const [productName, setProductName] = useState("");
-  const [productId, setProductId] = useState(0);
-  const [type, setType] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [productName, setProductName] = useState<string>("");
+  const [productId, setProductId] = useState<number>(0);
+  const [quantity, setQuantity] = useState<number>(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
   const { id } = useParams();
 
   useEffect(() => {
     const getTransaction = async () => {
-      const transactionResponse = await fetch(`${baseURL}/transaction/${id}`, {
+      const response = await fetch(`${baseURL}/transaction/${id}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const { data } = await transactionResponse.json();
+      const { data } = await response.json();
 
       setProductId(data.productId);
-      setType(data.type);
       setQuantity(data.quantity);
     };
     getTransaction();
@@ -64,17 +51,9 @@ export default function EditTransactionPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
-
-    const data = {
-      productId,
-      quantity,
-      type,
-    };
-
+    const data = { productId, quantity };
     try {
       formSchemaUpdateTransaction.parse(data);
-
       const response = await fetch(`${baseURL}/transaction/${id}`, {
         method: "PUT",
         headers: {
@@ -108,8 +87,6 @@ export default function EditTransactionPage() {
       } else {
         toast.error("Terjadi kesalahan!");
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -121,22 +98,7 @@ export default function EditTransactionPage() {
           <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
             <div>
               <Label>Produk</Label>
-              <Input type="text" value={productName} disabled />
-            </div>
-            <div>
-              <Label>Tipe transaksi</Label>
-              <Select onValueChange={(value) => setType(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder={type} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Transaksi</SelectLabel>
-                    <SelectItem value="IN">IN</SelectItem>
-                    <SelectItem value="OUT">OUT</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Input type="text" value={productName ?? ""} disabled />
             </div>
             <div>
               <Label>Jumlah</Label>
@@ -150,21 +112,12 @@ export default function EditTransactionPage() {
                 <p className="text-xs text-red-500">{errors.quantity}</p>
               )}
             </div>
-            {loading ? (
-              <div className="flex justify-end max-w-xl">
-                <Button disabled>
-                  <MoonLoader size={20} />
-                  <span className="ml-2">Menyimpan</span>
-                </Button>
-              </div>
-            ) : (
-              <div className="flex justify-end max-w-xl gap-x-2">
-                <Button type="submit">Simpan</Button>
-                <Link href="/transaction">
-                  <Button variant="secondary">Kembali</Button>
-                </Link>
-              </div>
-            )}
+            <div className="flex justify-end max-w-xl gap-x-2">
+              <Button type="submit">Simpan</Button>
+              <Link href="/transaction">
+                <Button variant="secondary">Kembali</Button>
+              </Link>
+            </div>
           </form>
         </div>
       </div>

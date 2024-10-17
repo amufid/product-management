@@ -202,7 +202,7 @@ export default function AddTransactionPage() {
                   </FormItem>
                 )}
               />
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="type"
                 render={({ field }) => (
@@ -225,7 +225,7 @@ export default function AddTransactionPage() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
               <FormField
                 control={form.control}
                 name="quantity"

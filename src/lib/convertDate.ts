@@ -4,8 +4,8 @@ function convertDate(inputDate: string) {
    // Format date to Indonesian locale
    const formattedDate = date.toLocaleDateString('id-ID', {
       weekday: 'long',
-      year: 'numeric',
-      month: 'long',
+      year: '2-digit',
+      month: '2-digit',
       day: 'numeric',
    });
 

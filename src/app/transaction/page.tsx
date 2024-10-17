@@ -13,7 +13,6 @@ import { Transaction } from "@/model/models";
 import { cookies } from "next/headers";
 import { Product } from "@/model/models";
 import PdfGenerator from "./pdfGenerator";
-import { Badge } from "@/components/ui/badge";
 import { ButtonCustom } from "@/components/buttons";
 
 async function getTransactions() {
@@ -70,7 +69,7 @@ export default async function TransactionPage() {
                 <TableHead>Nama produk</TableHead>
                 <TableHead>Jumlah produk</TableHead>
                 <TableHead>Total harga</TableHead>
-                <TableHead>Tipe transaksi</TableHead>
+                {/* <TableHead>Tipe transaksi</TableHead> */}
                 <TableHead>Tanggal</TableHead>
                 <TableHead>Aksi</TableHead>
               </TableRow>
@@ -89,13 +88,6 @@ export default async function TransactionPage() {
                   <TableCell>{transaction.quantity}</TableCell>
                   <TableCell>
                     {currencyFormat(transaction.totalPrice)}
-                  </TableCell>
-                  <TableCell>
-                    {transaction.type === "IN" ? (
-                      <Badge>IN</Badge>
-                    ) : (
-                      <Badge variant="secondary">OUT</Badge>
-                    )}
                   </TableCell>
                   <TableCell>{convertDate(transaction.createdAt)}</TableCell>
                   <TableCell>

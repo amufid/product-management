@@ -6,21 +6,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import convertDate from "@/lib/convertDate";
 import { currencyFormat } from "@/lib/currencyFormat";
+import { Product, Transaction } from "@/model/models";
 
-type Data = {
-  id: number;
-  type: string;
-  totalPrice: number;
-};
-interface Transactions {
-  data: Data[];
-}
-
-export default function LastTransactions(data: Transactions) {
-  const transactions: Data[] = data.data;
-  const limitData = transactions.slice(0, 6);
-
+export default function LastTransactions({
+  transactions,
+  products,
+}: {
+  transactions: Transaction[];
+  products: Product[];
+}) {
+  const limitData = transactions.slice(0, 4);
   return (
     <div className="p-3">
       <h1>Transaksi terakhir</h1>
@@ -28,17 +25,22 @@ export default function LastTransactions(data: Transactions) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Tipe</TableHead>
+              <TableHead>Produk</TableHead>
               <TableHead>Total harga</TableHead>
+              <TableHead>Tanggal</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {limitData.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell className="font-medium">
-                  {transaction.type}
+              <TableRow key={transaction.id} className="text-xs">
+                <TableCell>
+                  {
+                    products.find((product) => product.id === transaction.id)
+                      ?.name
+                  }
                 </TableCell>
                 <TableCell>{currencyFormat(transaction.totalPrice)}</TableCell>
+                <TableCell>{convertDate(transaction.createdAt)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

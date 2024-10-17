@@ -20,7 +20,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import { accessToken } from "@/lib/accessToken";
 import { baseURL } from "@/lib/baseUrl";
 import { formSchemaProduct } from "@/validation/validation";
-import { Category } from "@/model/models";
+import { Category, Supplier } from "@/model/models";
 import Image from "next/image";
 import MoonLoader from "react-spinners/MoonLoader";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,9 +43,12 @@ const uploadImage = async (formData: FormData) => {
 
 export default function UpdateProduct() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [getCategoryId, setCategoryId] = useState(0);
+  const [getSupplierId, setSupplierId] = useState(0);
   const [image, setImage] = useState<File | null>(null);
   const [categoryName, setCategoryName] = useState<undefined | string>("");
+  const [supplierName, setSupplierName] = useState<undefined | string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState({
@@ -55,30 +58,37 @@ export default function UpdateProduct() {
     sku: "",
     photo: "",
     categoryId: 0,
+    supplierId: 0,
     description: "",
   });
-
   const router = useRouter();
   const { id } = useParams();
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        const [productResponse, categoriesResponse] = await Promise.all([
-          fetch(`${baseURL}/products/${id}`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }),
-          fetch(`${baseURL}/categories`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }),
-        ]);
+        const [productResponse, categoriesResponse, supplierResponse] =
+          await Promise.all([
+            fetch(`${baseURL}/products/${id}`, {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }),
+            fetch(`${baseURL}/categories`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }),
+            fetch(`${baseURL}/suppliers`, {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }),
+          ]);
         const productData = await productResponse.json();
         const categoriesData = await categoriesResponse.json();
+        const supplierData = await supplierResponse.json();
 
         setProduct({
           ...product,
@@ -91,6 +101,8 @@ export default function UpdateProduct() {
         });
         setCategoryId(productData.data.categoryId);
         setCategories(categoriesData.data);
+        setSupplierId(productData.data.supplierId);
+        setSuppliers(supplierData.data);
       } catch (error) {
         toast.error(`${error}`);
       }
@@ -119,7 +131,15 @@ export default function UpdateProduct() {
       setCategoryName(data?.name);
     };
     handleCategory();
-  }, [categoryName]);
+
+    const handleSupplier = () => {
+      const data = suppliers.find(
+        (index) => Number(index.id) === getSupplierId
+      );
+      setSupplierName(data?.name);
+    };
+    handleSupplier();
+  }, [categoryName, supplierName]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -131,16 +151,17 @@ export default function UpdateProduct() {
     }
 
     let data = product;
-    data = { ...data, categoryId: getCategoryId };
+    data = { ...data, categoryId: getCategoryId, supplierId: getSupplierId };
 
     try {
-      formSchemaProduct.parse(data);
       const imageUrl = await uploadImage(formData);
-
+      if (!imageUrl) {
+        data = { ...data, photo: "" };
+      }
       if (imageUrl) {
         data = { ...data, photo: imageUrl };
       }
-
+      formSchemaProduct.parse(data);
       const response = await fetch(`${baseURL}/products/${id}`, {
         method: "PUT",
         headers: {
@@ -175,7 +196,7 @@ export default function UpdateProduct() {
     }
   };
 
-  const hamdleImage = (files: FileList | null) => {
+  const handleImage = (files: FileList | null) => {
     if (files && files.length > 0) {
       setImage(files[0]);
     } else {
@@ -255,7 +276,7 @@ export default function UpdateProduct() {
               )}
               <Input
                 type="file"
-                onChange={(e) => hamdleImage(e.target.files)}
+                onChange={(e) => handleImage(e.target.files)}
               />
               {errors.photo && (
                 <p className="text-xs text-red-500">{errors.photo}</p>
@@ -282,6 +303,32 @@ export default function UpdateProduct() {
               </Select>
               {errors.categoryId && (
                 <p className="text-xs text-red-500">{errors.categoryId}</p>
+              )}
+            </div>
+            <div className="grid w-full max-w-xl items-center gap-2">
+              <Label>Supplier</Label>
+              <Select onValueChange={(value) => setSupplierId(Number(value))}>
+                <SelectTrigger>
+                  <SelectValue placeholder={supplierName}>
+                    {supplierName}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Pilih supplier</SelectLabel>
+                    {suppliers.map((supplier) => (
+                      <SelectItem
+                        value={supplier.id.toString()}
+                        key={supplier.id}
+                      >
+                        {supplier.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {errors.supplierId && (
+                <p className="text-xs text-red-500">{errors.supplierId}</p>
               )}
             </div>
             <div className="grid w-full max-w-xl items-center gap-2">
