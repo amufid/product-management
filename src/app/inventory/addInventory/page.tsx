@@ -104,6 +104,7 @@ export default function AddTransactionPage() {
       const data = products.find((index) => Number(index.id) === productSelect);
       setProductName(data?.name);
     };
+    handleProductName();
 
     const handleLocationCode = () => {
       const data = locations.find(
@@ -111,8 +112,6 @@ export default function AddTransactionPage() {
       );
       setLocationCode(data?.code);
     };
-
-    handleProductName();
     handleLocationCode();
   }, [productName, locationCode]);
 
@@ -165,7 +164,7 @@ export default function AddTransactionPage() {
                 name="locationId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Destinasi</FormLabel>
+                    <FormLabel>Lokasi</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={(value: string) =>
@@ -173,13 +172,13 @@ export default function AddTransactionPage() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Pilih destinasi">
+                          <SelectValue placeholder="Pilih lokasi">
                             {locationCode}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>Destinasi</SelectLabel>
+                            <SelectLabel>Lokasi</SelectLabel>
                             {locations.map((location) => (
                               <SelectItem
                                 value={location.id.toString()}

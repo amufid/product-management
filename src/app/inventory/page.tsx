@@ -10,7 +10,7 @@ import { baseURL } from "@/lib/baseUrl";
 import convertDate from "@/lib/convertDate";
 import { Inventory, Location, Product } from "@/model/models";
 import { cookies } from "next/headers";
-import DeleteButtonInventory from "./deleteButtonInventory";
+import ModalDeleteInventory from "./modalDeleteInventory";
 import { ButtonCustom } from "@/components/buttons";
 
 async function getInventories() {
@@ -116,7 +116,7 @@ export default async function InventoryPage() {
                       >
                         Edit
                       </ButtonCustom>
-                      <DeleteButtonInventory {...inventory} />
+                      <ModalDeleteInventory id={inventory.id} />
                     </div>
                   </TableCell>
                 </TableRow>

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 import { currencyFormat } from "@/lib/currencyFormat";
-import DeleteProduct from "./deleteProduct";
+import ModalDeleteProduct from "./modalDeleteProduct";
 import { cookies } from "next/headers";
 import SearchProduct from "./searchProduct";
 import { baseURL } from "@/lib/baseUrl";
@@ -110,7 +110,7 @@ export default async function ProductPage({ searchParams }: any) {
                       >
                         Edit
                       </ButtonCustom>
-                      <DeleteProduct id={product.id} />
+                      <ModalDeleteProduct id={product.id} />
                     </div>
                   </TableCell>
                 </TableRow>
