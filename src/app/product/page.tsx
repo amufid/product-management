@@ -12,10 +12,12 @@ import ModalDeleteProduct from "./modalDeleteProduct";
 import { cookies } from "next/headers";
 import SearchProduct from "./searchProduct";
 import { baseURL } from "@/lib/baseUrl";
-import PaginationProduct from "./paginationProduct";
+import PaginationComponent from "../../components/pagination";
 import { DataProduct } from "@/model/models";
 import { ButtonCustom } from "@/components/buttons";
-import UpdateQuantityModal from "./updateQuantity";
+import ModalUpdateQuantity from "./modalUpdateQuantity";
+import ModalDetailProduct from "./modalDetailProduct";
+import { BiSolidEdit } from "react-icons/bi";
 
 async function getProducts(query: any) {
   const accessToken = cookies().get("accessToken")?.value;
@@ -98,17 +100,19 @@ export default async function ProductPage({ searchParams }: any) {
                     )}
                   </TableCell>
                   <TableCell>{currencyFormat(product.price)}</TableCell>
-                  <TableCell>{product.quantity}</TableCell>
+                  <TableCell>
+                    {product.quantity} <ModalUpdateQuantity id={product.id} />
+                  </TableCell>
                   <TableCell>{product.sku}</TableCell>
                   <TableCell>{product.description}</TableCell>
                   <TableCell>
                     <div className="flex flex-row gap-x-2">
-                      <UpdateQuantityModal id={product.id} />
+                      <ModalDetailProduct {...product} />
                       <ButtonCustom
                         link={`/product/${product.id}`}
                         variant="btn-primary"
                       >
-                        Edit
+                        <BiSolidEdit />
                       </ButtonCustom>
                       <ModalDeleteProduct id={product.id} />
                     </div>
@@ -120,7 +124,7 @@ export default async function ProductPage({ searchParams }: any) {
           {products.length === 0 && (
             <p className="text-center pt-3">Tidak ada produk</p>
           )}
-          {products.length > 10 && <PaginationProduct pages={pages} />}
+          {products.length > 0 && <PaginationComponent pages={pages} />}
         </div>
       </div>
     </div>

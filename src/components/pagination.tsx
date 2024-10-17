@@ -15,7 +15,7 @@ interface Data {
   };
 }
 
-export default function PaginationProduct({ pages }: Data) {
+export default function PaginationComponent({ pages }: Data) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { replace } = useRouter();

@@ -23,11 +23,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Product, Transaction } from "@/model/models";
 import convertDate from "@/lib/convertDate";
 import { getYears } from "@/lib/getYears";
 import { currencyFormat } from "@/lib/currencyFormat";
+import { useFetchData } from "@/hooks/useFetchData";
 
 // Membuat style untuk PDF
 const styles = StyleSheet.create({
@@ -92,21 +93,14 @@ const months = [
 // Dynamic import untuk PDFDownloadLink
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
 
-export default function PdfGenerator({
-  transactions,
-  products,
-}: {
-  transactions: Transaction[];
-  products: Product[];
-}) {
+export default function PdfGenerator({ products }: { products: Product[] }) {
   const [month, setMonth] = useState<string>("");
   const [year, setYear] = useState<string>("");
   const [years, setYears] = useState<string[]>(getYears());
+  const { transactions } = useFetchData();
 
   // Memfilter data berdasarkan bulan dari createdAt
   const filteredData = transactions.filter((item) => {
@@ -146,9 +140,9 @@ export default function PdfGenerator({
               <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>Total harga</Text>
               </View>
-              <View style={styles.tableCol}>
+              {/* <View style={styles.tableCol}>
                 <Text style={styles.tableCell}>Tipe transaksi</Text>
-              </View>
+              </View> */}
               <View style={styles.tableColDate}>
                 <Text style={styles.tableCell}>Tanggal</Text>
               </View>
@@ -176,9 +170,9 @@ export default function PdfGenerator({
                     {currencyFormat(data.totalPrice)}
                   </Text>
                 </View>
-                <View style={styles.tableCol}>
+                {/* <View style={styles.tableCol}>
                   <Text style={styles.tableCell}>{data.type}</Text>
-                </View>
+                </View> */}
                 <View style={styles.tableColDate}>
                   <Text style={styles.tableCell}>
                     {convertDate(data.createdAt)}

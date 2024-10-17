@@ -10,7 +10,7 @@ import LastTransactions from "@/components/dashboard/lastTransactions";
 
 async function getProductTotal() {
   const accessToken = cookies().get("accessToken")?.value;
-  const response = await fetch(`${baseURL}/products`, {
+  const response = await fetch(`${baseURL}/products?showAllData=true`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -34,7 +34,7 @@ async function getCategoryTotal() {
 
 async function getTransactionTotal() {
   const accessToken = cookies().get("accessToken")?.value;
-  const response = await fetch(`${baseURL}/transaction`, {
+  const response = await fetch(`${baseURL}/transaction?showAllData=true`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
