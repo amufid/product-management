@@ -60,3 +60,9 @@ export const formSchemaDestination = z.object({
   name: z.string().min(3, "Nama minimal 3 karakter"),
   address: z.string().min(10, "Alamat minimal 10 karakter"),
 });
+
+export const formSchemaSupplier = z.object({
+  name: z.string().min(3, "Nama minimal 3 karakter"),
+  address: z.string().min(10, "Alamat minimal 10 karakter"),
+  phoneNumber: z.string().min(9, "Nomor telepon minimal 9 karakter"),
+});

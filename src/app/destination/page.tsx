@@ -9,7 +9,7 @@ import {
 import { baseURL } from "@/lib/baseUrl";
 import { Destination } from "@/model/models";
 import { cookies } from "next/headers";
-import ModalDeleteDestination from "./deleteDestination";
+import ModalDeleteDestination from "./modalDeleteDestination";
 import { ButtonCustom } from "@/components/buttons";
 
 async function getDestinations() {

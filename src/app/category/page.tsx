@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { baseURL } from "@/lib/baseUrl";
 import { cookies } from "next/headers";
-import ModalDeleteCategory from "./deleteCategory";
+import ModalDeleteCategory from "./modalDeleteCategory";
 import { ButtonCustom } from "@/components/buttons";
 import { Category } from "@/model/models";
 
