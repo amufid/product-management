@@ -16,7 +16,6 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -28,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { formSchemaQuantityProduct } from "@/validation/validation";
+import { GrUpdate } from "react-icons/gr";
 
 export default function UpdateQuantityModal({ id }: { id: number }) {
   const [quantity, setQuantity] = useState<number>(0);
@@ -75,7 +75,9 @@ export default function UpdateQuantityModal({ id }: { id: number }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Jumlah</Button>
+        <Button className="ml-2">
+          <GrUpdate />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

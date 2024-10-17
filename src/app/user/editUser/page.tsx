@@ -95,6 +95,7 @@ export default function UpdateCategoryPage() {
                 type="email"
                 value={user.email}
                 onChange={(e) => setUser({ ...user, email: e.target.value })}
+                disabled
               />
               {errors.email && (
                 <p className="text-xs text-red-500">{errors.email}</p>

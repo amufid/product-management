@@ -9,28 +9,46 @@ import {
 import { baseURL } from "@/lib/baseUrl";
 import convertDate from "@/lib/convertDate";
 import { currencyFormat } from "@/lib/currencyFormat";
-import { Transaction } from "@/model/models";
+import { Product, Transaction } from "@/model/models";
 import { cookies } from "next/headers";
-import { Product } from "@/model/models";
 import PdfGenerator from "./pdfGenerator";
 import { ButtonCustom } from "@/components/buttons";
+import PaginationComponent from "@/components/pagination";
 
-async function getTransactions() {
+async function getTransactions(query: any) {
   const accessToken = cookies().get("accessToken")?.value;
-  const response = await fetch(`${baseURL}/transaction`, {
+  let params: { [key: string]: any } = {
+    page: query?.page || 1,
+  };
+
+  const filteredParams = Object.keys(params)
+    .filter((key) => params[key] !== "" && params[key] !== undefined)
+    .reduce((object, key) => {
+      object[key] = params[key];
+      return object;
+    }, {} as { [key: string]: any });
+
+  const queryParams = Object.keys(filteredParams)
+    .map(
+      (key) =>
+        encodeURIComponent(key) + "=" + encodeURIComponent(filteredParams[key])
+    )
+    .join("&");
+
+  const response = await fetch(`${baseURL}/transaction?${queryParams}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
     cache: "no-store",
   });
-  const { data } = await response.json();
+  const data = await response.json();
   return data;
 }
 
 async function getProducts() {
   const accessToken = cookies().get("accessToken")?.value;
-  const response = await fetch(`${baseURL}/products`, {
+  const response = await fetch(`${baseURL}/products?showAllData=true`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -41,13 +59,11 @@ async function getProducts() {
   return data;
 }
 
-export default async function TransactionPage() {
-  const transactionsData = getTransactions();
-  const productsData = getProducts();
-  const [transactions, products] = await Promise.all([
-    transactionsData,
-    productsData,
-  ]);
+export default async function TransactionPage({ searchParams }: any) {
+  const transactions = await getTransactions(searchParams);
+  const products = await getProducts();
+  const transactionsResult = transactions.data;
+  const pages = transactions.paging;
 
   return (
     <div className="w-full">
@@ -61,7 +77,7 @@ export default async function TransactionPage() {
             >
               + Tambah transaksi
             </ButtonCustom>
-            <PdfGenerator transactions={transactions} products={products} />
+            <PdfGenerator products={products} />
           </div>
           <Table>
             <TableHeader>
@@ -69,13 +85,12 @@ export default async function TransactionPage() {
                 <TableHead>Nama produk</TableHead>
                 <TableHead>Jumlah produk</TableHead>
                 <TableHead>Total harga</TableHead>
-                {/* <TableHead>Tipe transaksi</TableHead> */}
                 <TableHead>Tanggal</TableHead>
                 <TableHead>Aksi</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions.map((transaction: Transaction) => (
+              {transactionsResult.map((transaction: Transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>
                     {
@@ -104,9 +119,10 @@ export default async function TransactionPage() {
               ))}
             </TableBody>
           </Table>
-          {transactions.length === 0 && (
+          {transactionsResult.length === 0 && (
             <p className="text-center pt-3">Tidak ada transaksi</p>
           )}
+          <PaginationComponent pages={pages} />
         </div>
       </div>
     </div>

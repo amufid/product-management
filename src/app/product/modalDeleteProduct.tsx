@@ -5,6 +5,7 @@ import { accessToken } from "@/lib/accessToken";
 import { baseURL } from "@/lib/baseUrl";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { MdDelete } from "react-icons/md";
 
 export default function DeleteProduct({ id }: { id: number }) {
   const router = useRouter();
@@ -28,5 +29,11 @@ export default function DeleteProduct({ id }: { id: number }) {
     }
   };
 
-  return <ModalDelete handleDelete={handleDelete} title="produk" />;
+  return (
+    <ModalDelete
+      handleDelete={handleDelete}
+      title="produk"
+      icon={<MdDelete />}
+    />
+  );
 }

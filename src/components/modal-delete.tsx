@@ -12,28 +12,28 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ReactNode } from "react";
 
 export default function ModalDelete({
   handleDelete,
   title,
+  icon,
 }: {
   handleDelete: () => void;
   title: string;
+  icon?: ReactNode;
 }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">Hapus</Button>
+        <Button variant="destructive">{icon ? icon : "Hapus"}</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="max-w-sm py-5">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="text-lg mb-5">
-            Konfirmasi Hapus
-          </AlertDialogTitle>
-          <AlertDialogTitle className="text-sm">
+        <AlertDialogHeader className="gap-4 pb-3">
+          <AlertDialogTitle>Konfirmasi Hapus</AlertDialogTitle>
+          <AlertDialogDescription>
             Apakah anda yakin hapus {title}?
-          </AlertDialogTitle>
-          <AlertDialogDescription></AlertDialogDescription>
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Batal</AlertDialogCancel>
