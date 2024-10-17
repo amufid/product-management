@@ -122,7 +122,7 @@ export default async function Home() {
           <Chart transactions={transactions} />
         </div>
         <div className="w-full sm:w-[30rem] bg-slate-300 dark:bg-slate-950 rounded-sm border">
-          <LastTransactions data={transactions} />
+          <LastTransactions transactions={transactions} products={products} />
         </div>
       </div>
     </main>

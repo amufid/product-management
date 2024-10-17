@@ -31,7 +31,7 @@ import MoonLoader from "react-spinners/MoonLoader";
 import { accessToken } from "@/lib/accessToken";
 import { baseURL } from "@/lib/baseUrl";
 import { formSchemaProduct } from "@/validation/validation";
-import { Category } from "@/model/models";
+import { Category, Supplier } from "@/model/models";
 import { Textarea } from "@/components/ui/textarea";
 
 type FormSchema = z.infer<typeof formSchemaProduct>;
@@ -54,13 +54,16 @@ const UploadImage = async (formData: FormData) => {
 
 export default function AddProduct() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [categoryName, setCategoryName] = useState<string | undefined>("");
+  const [supplierName, setSupplierName] = useState<string | undefined>("");
   const [loading, setLoading] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchemaProduct),
   });
   const { handleSubmit } = form;
   const categorySelect = form.watch("categoryId");
+  const supplierSelect = form.watch("supplierId");
   const router = useRouter();
 
   const onSubmit = async (values: FormSchema) => {
@@ -105,11 +108,29 @@ export default function AddProduct() {
   };
 
   useEffect(() => {
-    const getCategories = async () => {
-      const response = await instanceClient.get("/categories");
-      setCategories(response.data.data);
+    const fetchData = async () => {
+      try {
+        const [categoriesResponse, supplierResponse] = await Promise.all([
+          fetch(`${baseURL}/categories`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+          fetch(`${baseURL}/suppliers`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+        ]);
+        const categoriesData = await categoriesResponse.json();
+        const supplierData = await supplierResponse.json();
+        setCategories(categoriesData.data);
+        setSuppliers(supplierData.data);
+      } catch (e) {
+        toast.error("Terjadi kesalahan");
+      }
     };
-    getCategories();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -120,7 +141,15 @@ export default function AddProduct() {
       setCategoryName(data?.name);
     };
     handleNameCategory();
-  }, [categoryName]);
+
+    const handleNameSupplier = () => {
+      const data = suppliers.find(
+        (index) => Number(index.id) === supplierSelect
+      );
+      setSupplierName(data?.name);
+    };
+    handleNameSupplier();
+  }, [categoryName, supplierName]);
 
   return (
     <div className="w-full">
@@ -237,6 +266,38 @@ export default function AddProduct() {
                               key={category.id}
                             >
                               {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="supplierId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Supplier</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih supplier">
+                          {supplierName}
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Supplier</SelectLabel>
+                          {suppliers.map((supplier) => (
+                            <SelectItem
+                              value={supplier.id.toString()}
+                              key={supplier.id}
+                            >
+                              {supplier.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>

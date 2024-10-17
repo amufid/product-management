@@ -15,6 +15,7 @@ import { baseURL } from "@/lib/baseUrl";
 import PaginationProduct from "./paginationProduct";
 import { DataProduct } from "@/model/models";
 import { ButtonCustom } from "@/components/buttons";
+import UpdateQuantityModal from "./updateQuantity";
 
 async function getProducts(query: any) {
   const accessToken = cookies().get("accessToken")?.value;
@@ -102,6 +103,7 @@ export default async function ProductPage({ searchParams }: any) {
                   <TableCell>{product.description}</TableCell>
                   <TableCell>
                     <div className="flex flex-row gap-x-2">
+                      <UpdateQuantityModal id={product.id} />
                       <ButtonCustom
                         link={`/product/${product.id}`}
                         variant="btn-primary"
