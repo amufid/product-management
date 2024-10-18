@@ -37,6 +37,8 @@ export interface Destination {
   id: number;
   name: string;
   address: string;
+  email: string;
+  phoneNumber: string;
 }
 
 export interface Inventory {
