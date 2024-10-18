@@ -17,7 +17,7 @@ export default function LastTransactions({
   transactions: Transaction[];
   products: Product[];
 }) {
-  const limitData = transactions.slice(0, 4);
+  const limitData = transactions.slice(0, 5);
   return (
     <div className="p-3">
       <h1>Transaksi terakhir</h1>

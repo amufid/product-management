@@ -36,21 +36,21 @@ export default async function DestinationPage() {
     <div className="w-full">
       <div className="sm:w-[50rem] m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
         <div className="m-5">
-          <h1 className="text-xl font-semibold pt-2 pb-5">
-            Daftar tujuan pengiriman
-          </h1>
+          <h1 className="text-xl font-semibold pt-2 pb-5">Daftar pelanggan</h1>
           <div className="flex justify-between items-center mb-2 gap-2">
             <ButtonCustom
               link="/destination/addDestination"
               variant="btn-success"
             >
-              + Tambah tujuan
+              + Tambah
             </ButtonCustom>
           </div>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Nama</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Nomor telepon</TableHead>
                 <TableHead>Alamat</TableHead>
                 <TableHead>Aksi</TableHead>
               </TableRow>
@@ -59,6 +59,8 @@ export default async function DestinationPage() {
               {destinations.map((destination) => (
                 <TableRow key={destination.id}>
                   <TableCell>{destination.name}</TableCell>
+                  <TableCell>{destination.email}</TableCell>
+                  <TableCell>{destination.phoneNumber}</TableCell>
                   <TableCell>{destination.address}</TableCell>
                   <TableCell>
                     <div className="flex flex-row gap-x-2">

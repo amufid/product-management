@@ -64,7 +64,7 @@ export default function AddDestinationPage() {
     <div className="w-full">
       <div className="sm:w-[30rem] m-5 bg-slate-50 dark:bg-slate-950 border rounded-sm">
         <div className="m-5">
-          <h1 className="text-xl pt-3 pb-5">Buat tujuan pengiriman</h1>
+          <h1 className="text-xl pt-3 pb-5">Tambah pelanggan</h1>
           <Form {...form}>
             <form
               onSubmit={handleSubmit(onSubmit)}
@@ -80,6 +80,42 @@ export default function AddDestinationPage() {
                       <Input
                         placeholder="Nama"
                         type="text"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Email"
+                        type="email"
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nomor telepon</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Nomor telepon"
+                        type="number"
                         {...field}
                         onChange={(e) => field.onChange(e.target.value)}
                       />
@@ -106,10 +142,13 @@ export default function AddDestinationPage() {
                 )}
               />
               {loading ? (
-                <div className="flex justify-end max-w-xl">
+                <div className="flex justify-end max-w-xl gap-x-2">
                   <Button disabled>
                     <MoonLoader size={20} />
                     <span className="ml-2">Menyimpan</span>
+                  </Button>
+                  <Button variant="secondary" disabled>
+                    Kembali
                   </Button>
                 </div>
               ) : (

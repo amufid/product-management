@@ -64,6 +64,7 @@ export default function AuthPage() {
 
   return (
     <Form {...form}>
+      <p>Email: admin@mail.com, Password: admin123</p>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         <FormField
           control={control}

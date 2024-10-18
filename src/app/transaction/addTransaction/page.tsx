@@ -171,7 +171,7 @@ export default function AddTransactionPage() {
                 name="destinationId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Destinasi</FormLabel>
+                    <FormLabel>Tujuan pengiriman</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={(value: string) =>
@@ -179,13 +179,13 @@ export default function AddTransactionPage() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Pilih destinasi">
+                          <SelectValue placeholder="Pilih pelanggan">
                             {destinationName}
                           </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
-                            <SelectLabel>Destinasi</SelectLabel>
+                            <SelectLabel>Tujuan pengiriman</SelectLabel>
                             {destinations.map((destination) => (
                               <SelectItem
                                 value={destination.id.toString()}
@@ -249,6 +249,9 @@ export default function AddTransactionPage() {
                   <Button disabled>
                     <MoonLoader size={20} />
                     <span className="ml-2">Menyimpan</span>
+                  </Button>
+                  <Button variant="secondary" disabled>
+                    Kembali
                   </Button>
                 </div>
               ) : (

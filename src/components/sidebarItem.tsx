@@ -7,6 +7,7 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { FaUserCheck } from "react-icons/fa";
 import { IoStorefront } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
+import { FaPeopleRoof } from "react-icons/fa6";
 
 export const items = [
   {
@@ -36,8 +37,8 @@ export const items = [
   {
     id: 5,
     route: "/destination",
-    icon: <IoStorefront />,
-    title: "Tujuan pengiriman",
+    icon: <FaPeopleRoof />,
+    title: "Pelanggan",
   },
   {
     id: 6,

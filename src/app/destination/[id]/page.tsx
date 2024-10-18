@@ -10,6 +10,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import { set } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -18,8 +19,10 @@ export default function UpdateDestinationPage({
 }: {
   params: { id: number };
 }) {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+  const [name, setName] = useState<string>("");
+  const [address, setAddress] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
@@ -38,6 +41,8 @@ export default function UpdateDestinationPage({
       const { data } = await response.json();
       setName(data.name);
       setAddress(data.address);
+      setEmail(data.email);
+      setPhoneNumber(data.phoneNumber);
     };
     getDestination();
   }, []);
@@ -45,7 +50,7 @@ export default function UpdateDestinationPage({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const data = { name, address };
+      const data = { name, address, email, phoneNumber };
       formSchemaDestination.parse(data);
 
       const response = await fetch(`${baseURL}/destination/${params.id}`, {
@@ -56,6 +61,11 @@ export default function UpdateDestinationPage({
         },
         body: JSON.stringify(data),
       });
+      console.log(response);
+      if (response.status === 400) {
+        toast.error("Nama pelanggan sudah ada!");
+        return;
+      }
 
       if (!response.ok) {
         toast.error("Terjadi kesalahan!");
@@ -83,7 +93,7 @@ export default function UpdateDestinationPage({
     <div className="w-full">
       <div className="m-5 bg-slate-50 dark:bg-slate-950 sm:w-[30rem] border rounded-sm">
         <div className="m-5">
-          <h1 className="text-xl py-7">Edit tujuan pengiriman</h1>
+          <h1 className="text-xl pb-5">Edit pelanggan</h1>
           <form onSubmit={handleSubmit} className="space-y-5 max-w-xl">
             <div className="grid w-full max-w-xl items-center gap-2">
               <Label>Nama</Label>
@@ -94,6 +104,28 @@ export default function UpdateDestinationPage({
               />
               {errors.name && (
                 <p className="text-xs text-red-500">{errors.name}</p>
+              )}
+            </div>
+            <div className="grid w-full max-w-xl items-center gap-2">
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {errors.email && (
+                <p className="text-xs text-red-500">{errors.email}</p>
+              )}
+            </div>
+            <div className="grid w-full max-w-xl items-center gap-2">
+              <Label>Nomor telepon</Label>
+              <Input
+                type="number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+              {errors.phoneNumber && (
+                <p className="text-xs text-red-500">{errors.phoneNumber}</p>
               )}
             </div>
             <div className="grid w-full max-w-xl items-center gap-2">
