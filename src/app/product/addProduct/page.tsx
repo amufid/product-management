@@ -32,6 +32,7 @@ import { baseURL } from "@/lib/baseUrl";
 import { formSchemaProduct } from "@/validation/validation";
 import { Category, Supplier } from "@/model/models";
 import { Textarea } from "@/components/ui/textarea";
+import Loading from "@/app/loading";
 
 type FormSchema = z.infer<typeof formSchemaProduct>;
 
@@ -56,7 +57,10 @@ export default function AddProduct() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [categoryName, setCategoryName] = useState<string | undefined>("");
   const [supplierName, setSupplierName] = useState<string | undefined>("");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchemaProduct),
   });
@@ -66,7 +70,7 @@ export default function AddProduct() {
   const router = useRouter();
 
   const onSubmit = async (values: FormSchema) => {
-    setLoading(true);
+    setIsLoading({ ...isLoading, submit: true });
 
     const formData = new FormData();
 
@@ -102,7 +106,7 @@ export default function AddProduct() {
     } catch (error) {
       toast.error("Kesalahan server internal!");
     } finally {
-      setLoading(false);
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
@@ -149,6 +153,8 @@ export default function AddProduct() {
     };
     handleNameSupplier();
   }, [categoryName, supplierName]);
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -319,12 +325,13 @@ export default function AddProduct() {
                   </FormItem>
                 )}
               />
-              {loading ? (
-                <div className="flex justify-end max-w-xl py-3">
+              {isLoading.submit ? (
+                <div className="flex justify-end max-w-xl gap-x-2 py-3">
                   <Button disabled>
                     <MoonLoader size={20} />
                     <span className="ml-2">Menyimpan</span>
                   </Button>
+                  <Button variant="secondary">Kembali</Button>
                 </div>
               ) : (
                 <div className="flex justify-end max-w-xl gap-x-2 py-3">

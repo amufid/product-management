@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { formSchemaInventory } from "@/validation/validation";
 import { Location, Product } from "@/model/models";
+import Loading from "@/app/loading";
 
 type FormSchema = z.infer<typeof formSchemaInventory>;
 
@@ -39,17 +40,20 @@ export default function AddTransactionPage() {
     resolver: zodResolver(formSchemaInventory),
   });
   const { handleSubmit } = form;
-  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [productName, setProductName] = useState<string | undefined>("");
   const [locationCode, setLocationCode] = useState<string | undefined>("");
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
   const productSelect = form.watch("productId");
   const locationSelect = form.watch("locationId");
 
   const onSubmit = async (values: FormSchema) => {
-    setLoading(true);
+    setIsLoading({ ...isLoading, submit: true });
     try {
       const response = await fetch(`${baseURL}/inventory`, {
         method: "POST",
@@ -71,7 +75,7 @@ export default function AddTransactionPage() {
     } catch (error) {
       toast.error("Kesalahan server internal!");
     } finally {
-      setLoading(false);
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
@@ -114,6 +118,8 @@ export default function AddTransactionPage() {
     };
     handleLocationCode();
   }, [productName, locationCode]);
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -213,11 +219,14 @@ export default function AddTransactionPage() {
                   </FormItem>
                 )}
               />
-              {loading ? (
-                <div className="flex justify-end max-w-xl">
+              {isLoading.submit ? (
+                <div className="flex justify-end max-w-xl gap-x-2">
                   <Button disabled>
                     <MoonLoader size={20} />
                     <span className="ml-2">Menyimpan</span>
+                  </Button>
+                  <Button variant="secondary" disabled>
+                    Kembali
                   </Button>
                 </div>
               ) : (

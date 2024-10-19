@@ -30,11 +30,11 @@ export default function AddTransactionPage() {
     resolver: zodResolver(formSchemaLocation),
   });
   const { handleSubmit } = form;
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const onSubmit = async (values: FormSchema) => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const response = await fetch(`${baseURL}/location`, {
         method: "POST",
@@ -56,7 +56,7 @@ export default function AddTransactionPage() {
     } catch (error) {
       toast.error("Kesalahan server internal!");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -105,11 +105,14 @@ export default function AddTransactionPage() {
                   </FormItem>
                 )}
               />
-              {loading ? (
-                <div className="flex justify-end max-w-xl">
+              {isLoading ? (
+                <div className="flex justify-end max-w-xl gap-x-2">
                   <Button disabled>
                     <MoonLoader size={20} />
                     <span className="ml-2">Menyimpan</span>
+                  </Button>
+                  <Button variant="secondary" disabled>
+                    Kembali
                   </Button>
                 </div>
               ) : (

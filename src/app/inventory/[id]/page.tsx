@@ -19,9 +19,9 @@ import {
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { accessToken } from "@/lib/accessToken";
 import { baseURL } from "@/lib/baseUrl";
-import { SkeletonCard } from "@/components/skeleton";
 import { Product, Location } from "@/model/models";
 import MoonLoader from "react-spinners/MoonLoader";
+import Loading from "@/app/loading";
 
 export default function UpdateProduct() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -32,14 +32,16 @@ export default function UpdateProduct() {
   const [productName, setProductname] = useState<undefined | string>("");
   const [locationCode, setLocationCode] = useState<undefined | string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
   const { id } = useParams();
 
   useEffect(() => {
     const fetchAllData = async () => {
-      setLoading(true);
+      setIsLoading({ ...isLoading, page: true });
       try {
         const [inventoryResponse, productResponse, locationResponse] =
           await Promise.all([
@@ -74,7 +76,7 @@ export default function UpdateProduct() {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false);
+        setIsLoading({ ...isLoading, page: false });
       }
     };
     fetchAllData();
@@ -123,7 +125,7 @@ export default function UpdateProduct() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoadingSubmit(true);
+    setIsLoading({ ...isLoading, submit: true });
 
     let data = {
       productId,
@@ -162,17 +164,11 @@ export default function UpdateProduct() {
         toast.error("Kesalahan server internal!");
       }
     } finally {
-      setLoadingSubmit(false);
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
-  if (loading) {
-    return (
-      <div>
-        <SkeletonCard />
-      </div>
-    );
-  }
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -238,11 +234,14 @@ export default function UpdateProduct() {
               )}
             </div>
 
-            {loadingSubmit ? (
-              <div className="flex justify-end max-w-xl">
+            {isLoading.submit ? (
+              <div className="flex justify-end max-w-xl gap-x-2">
                 <Button disabled>
                   <MoonLoader size={20} />
                   <span className="ml-2">Menyimpan</span>
+                </Button>
+                <Button variant="secondary" disabled>
+                  Kembali
                 </Button>
               </div>
             ) : (

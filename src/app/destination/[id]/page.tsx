@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,9 +11,9 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
-import { set } from "react-hook-form";
+import MoonLoader from "react-spinners/MoonLoader";
 import { toast } from "react-toastify";
-import { z } from "zod";
+import { set, z } from "zod";
 
 export default function UpdateDestinationPage({
   params,
@@ -24,31 +25,44 @@ export default function UpdateDestinationPage({
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
 
   useEffect(() => {
     const getDestination = async () => {
-      const response = await fetch(`${baseURL}/destination/${params.id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      setIsLoading({ ...isLoading, page: true });
+      try {
+        const response = await fetch(`${baseURL}/destination/${params.id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-      if (!response.ok) {
-        throw new Error("Terjadi kesalahan pengambilan data!");
+        if (!response.ok) {
+          toast.error("Terjadi kesalahan pengambilan data!");
+          return;
+        }
+
+        const { data } = await response.json();
+        setName(data.name);
+        setAddress(data.address);
+        setEmail(data.email);
+        setPhoneNumber(data.phoneNumber);
+      } catch (e) {
+        toast.error("Terjadi kesalahan server internal");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
       }
-
-      const { data } = await response.json();
-      setName(data.name);
-      setAddress(data.address);
-      setEmail(data.email);
-      setPhoneNumber(data.phoneNumber);
     };
     getDestination();
   }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading({ ...isLoading, submit: true });
     try {
       const data = { name, address, email, phoneNumber };
       formSchemaDestination.parse(data);
@@ -86,8 +100,12 @@ export default function UpdateDestinationPage({
       } else {
         toast.error("Kesalahan server internal!");
       }
+    } finally {
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -138,14 +156,24 @@ export default function UpdateDestinationPage({
                 <p className="text-xs text-red-500">{errors.address}</p>
               )}
             </div>
-            <div className="flex justify-end max-w-xl gap-x-2">
-              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">
-                Simpan
-              </Button>
-              <Link href="/destination">
-                <Button variant="secondary">Kembali</Button>
-              </Link>
-            </div>
+            {isLoading.submit ? (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button disabled>
+                  <MoonLoader size={20} />
+                  <span className="ml-2">Menyimpan</span>
+                </Button>
+                <Button variant="secondary" disabled>
+                  Kembali
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button>Simpan</Button>
+                <Link href="/destination">
+                  <Button variant="secondary">Kembali</Button>
+                </Link>
+              </div>
+            )}
           </form>
         </div>
       </div>

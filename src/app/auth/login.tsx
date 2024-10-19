@@ -16,6 +16,8 @@ import {
 import { toast } from "react-toastify";
 import { baseURL } from "@/lib/baseUrl";
 import { useAuth } from "@/context/authContext";
+import { useState } from "react";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const formSchema = z.object({
   email: z.string(),
@@ -34,8 +36,10 @@ export default function AuthPage() {
   });
   const { register, handleSubmit, control } = form;
   const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: FormSchema) => {
+    setIsLoading(true);
     try {
       const res = await fetch(`${baseURL}/user/login`, {
         method: "POST",
@@ -59,6 +63,8 @@ export default function AuthPage() {
       }
     } catch (error) {
       toast.error("Kesalahan server internal!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -100,7 +106,14 @@ export default function AuthPage() {
             </FormItem>
           )}
         />
-        <Button>Login</Button>
+        {isLoading ? (
+          <Button disabled>
+            <MoonLoader size={20} />
+            <span className="ml-2">Login</span>
+          </Button>
+        ) : (
+          <Button>Login</Button>
+        )}
       </form>
     </Form>
   );

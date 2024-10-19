@@ -11,26 +11,43 @@ import { toast } from "react-toastify";
 import { useParams, useRouter } from "next/navigation";
 import { formSchemaUpdateTransaction } from "@/validation/validation";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import MoonLoader from "react-spinners/MoonLoader";
 
 export default function EditTransactionPage() {
   const [productName, setProductName] = useState<string>("");
   const [productId, setProductId] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
   const { id } = useParams();
 
   useEffect(() => {
     const getTransaction = async () => {
-      const response = await fetch(`${baseURL}/transaction/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const { data } = await response.json();
+      setIsLoading((prev) => ({ ...prev, page: true }));
+      try {
+        const response = await fetch(`${baseURL}/transaction/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-      setProductId(data.productId);
-      setQuantity(data.quantity);
+        if (!response.ok) {
+          toast.error("Terjadi kesalahan pengambilan data!");
+          return;
+        }
+        const { data } = await response.json();
+
+        setProductId(data.productId);
+        setQuantity(data.quantity);
+      } catch (e) {
+        toast.error("Terjadi kesalahan server internal!");
+      } finally {
+        setIsLoading((prev) => ({ ...prev, page: false }));
+      }
     };
     getTransaction();
   }, []);
@@ -51,6 +68,7 @@ export default function EditTransactionPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading({ ...isLoading, submit: true });
     const data = { productId, quantity };
     try {
       formSchemaUpdateTransaction.parse(data);
@@ -87,6 +105,8 @@ export default function EditTransactionPage() {
       } else {
         toast.error("Terjadi kesalahan!");
       }
+    } finally {
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
@@ -112,12 +132,24 @@ export default function EditTransactionPage() {
                 <p className="text-xs text-red-500">{errors.quantity}</p>
               )}
             </div>
-            <div className="flex justify-end max-w-xl gap-x-2">
-              <Button type="submit">Simpan</Button>
-              <Link href="/transaction">
-                <Button variant="secondary">Kembali</Button>
-              </Link>
-            </div>
+            {isLoading.submit ? (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button disabled>
+                  <MoonLoader size={20} />
+                  <span className="ml-2">Menyimpan</span>
+                </Button>
+                <Button variant="secondary" disabled>
+                  Kembali
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button type="submit">Simpan</Button>
+                <Link href="/transaction">
+                  <Button variant="secondary">Kembali</Button>
+                </Link>
+              </div>
+            )}
           </form>
         </div>
       </div>
