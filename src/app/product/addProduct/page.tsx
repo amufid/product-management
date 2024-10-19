@@ -112,6 +112,7 @@ export default function AddProduct() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading({ ...isLoading, page: true });
       try {
         const [categoriesResponse, supplierResponse] = await Promise.all([
           fetch(`${baseURL}/categories`, {
@@ -125,12 +126,20 @@ export default function AddProduct() {
             },
           }),
         ]);
+
+        if (!categoriesResponse.ok || !supplierResponse.ok) {
+          toast.error("Terjadi kesalahan pengambilan data");
+          return;
+        }
+
         const categoriesData = await categoriesResponse.json();
         const supplierData = await supplierResponse.json();
         setCategories(categoriesData.data);
         setSuppliers(supplierData.data);
       } catch (e) {
         toast.error("Terjadi kesalahan");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
       }
     };
     fetchData();
