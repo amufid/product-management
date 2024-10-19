@@ -136,22 +136,22 @@ export default function UpdateCategoryPage() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <div className="flex gap-x-2">
-                      isLoading.submit?(
-                      <Button disabled>
-                        <MoonLoader size={20} />
-                        <span className="ml-2">Menyimpan</span>
-                      </Button>
-                      ): (
-                      <Button
-                        type="submit"
-                        onClick={(event) =>
-                          handleSubmit(event, String(user.email), "PATCH")
-                        }
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white"
-                      >
-                        Konfirmasi
-                      </Button>
-                      )
+                      {isLoading.submit ? (
+                        <Button disabled>
+                          <MoonLoader size={20} />
+                          <span className="ml-2">Menyimpan</span>
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          onClick={(event) =>
+                            handleSubmit(event, String(user.email), "PATCH")
+                          }
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                        >
+                          Konfirmasi
+                        </Button>
+                      )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button variant="destructive">Hapus</Button>
