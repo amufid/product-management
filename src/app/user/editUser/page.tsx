@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { accessToken } from "@/lib/accessToken";
@@ -9,6 +10,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import MoonLoader from "react-spinners/MoonLoader";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -18,27 +20,43 @@ export default function UpdateCategoryPage() {
     email: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
-      const response = await fetch(`${baseURL}/user/0`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const { data } = await response.json();
-      setUser({
-        ...user,
-        username: data.username,
-        email: data.email,
-      });
+      setIsLoading({ ...isLoading, page: true });
+      try {
+        const response = await fetch(`${baseURL}/user/0`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!response.ok) {
+          toast.error("Terjadi kesalahan pengambilan data!");
+          return;
+        }
+        const { data } = await response.json();
+        setUser({
+          ...user,
+          username: data.username,
+          email: data.email,
+        });
+      } catch (e) {
+        toast.error("Terjadi kesalahan server internal!");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
+      }
     };
     getUser();
   }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading({ ...isLoading, submit: true });
     try {
       formSchemaUser.parse(user);
       const response = await fetch(`${baseURL}/user`, {
@@ -69,8 +87,12 @@ export default function UpdateCategoryPage() {
       } else {
         toast.error("Kesalahan server internal!");
       }
+    } finally {
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -101,14 +123,24 @@ export default function UpdateCategoryPage() {
                 <p className="text-xs text-red-500">{errors.email}</p>
               )}
             </div>
-            <div className="flex justify-end max-w-xl gap-x-2">
-              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">
-                Simpan
-              </Button>
-              <Link href="/dashboard">
-                <Button variant="secondary">Kembali</Button>
-              </Link>
-            </div>
+            {isLoading.submit ? (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button disabled>
+                  <MoonLoader size={20} />
+                  <span className="ml-2">Menyimpan</span>
+                </Button>
+                <Button variant="secondary" disabled>
+                  Kembali
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button>Simpan</Button>
+                <Link href="/dashboard">
+                  <Button variant="secondary">Kembali</Button>
+                </Link>
+              </div>
+            )}
           </form>
         </div>
       </div>

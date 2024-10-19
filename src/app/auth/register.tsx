@@ -1,6 +1,6 @@
 "use client";
 
-import { z } from "zod";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
 import { baseURL } from "@/lib/baseUrl";
+import MoonLoader from "react-spinners/MoonLoader";
+import { useState } from "react";
 
 const formSchema = z.object({
   username: z
@@ -50,8 +52,10 @@ export default function FormRegister() {
   });
   const { register, handleSubmit, control } = form;
   const role = form.watch("role");
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: FormSchema) => {
+    setIsLoading(true);
     try {
       const res = await fetch(`${baseURL}/user/register`, {
         method: "POST",
@@ -72,6 +76,8 @@ export default function FormRegister() {
       }, 2000);
     } catch (error) {
       toast.error("Kesalahan server internal!");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -151,7 +157,14 @@ export default function FormRegister() {
             </FormItem>
           )}
         />
-        <Button>Register</Button>
+        {isLoading ? (
+          <Button disabled>
+            <MoonLoader size={20} />
+            <span className="ml-2">Register</span>
+          </Button>
+        ) : (
+          <Button>Register</Button>
+        )}
       </form>
     </Form>
   );

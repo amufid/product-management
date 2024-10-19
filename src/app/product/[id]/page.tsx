@@ -24,6 +24,7 @@ import { Category, Supplier } from "@/model/models";
 import Image from "next/image";
 import MoonLoader from "react-spinners/MoonLoader";
 import { Textarea } from "@/components/ui/textarea";
+import Loading from "@/app/loading";
 
 const uploadImage = async (formData: FormData) => {
   try {
@@ -50,7 +51,10 @@ export default function UpdateProduct() {
   const [categoryName, setCategoryName] = useState<undefined | string>("");
   const [supplierName, setSupplierName] = useState<undefined | string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const [product, setProduct] = useState({
     name: "",
     price: 0,
@@ -66,6 +70,7 @@ export default function UpdateProduct() {
 
   useEffect(() => {
     const fetchAllData = async () => {
+      setIsLoading({ ...isLoading, page: true });
       try {
         const [productResponse, categoriesResponse, supplierResponse] =
           await Promise.all([
@@ -104,7 +109,9 @@ export default function UpdateProduct() {
         setSupplierId(productData.data.supplierId);
         setSuppliers(supplierData.data);
       } catch (error) {
-        toast.error(`${error}`);
+        toast.error("Terjadi kesalahan server internal");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
       }
     };
     fetchAllData();
@@ -143,7 +150,7 @@ export default function UpdateProduct() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
+    setIsLoading({ ...isLoading, submit: true });
     const formData = new FormData();
 
     if (image) {
@@ -152,15 +159,15 @@ export default function UpdateProduct() {
 
     let data = product;
     data = { ...data, categoryId: getCategoryId, supplierId: getSupplierId };
-
     try {
-      const imageUrl = await uploadImage(formData);
-      if (!imageUrl) {
+      if (!data.photo) {
         data = { ...data, photo: "" };
       }
+      const imageUrl = await uploadImage(formData);
       if (imageUrl) {
         data = { ...data, photo: imageUrl };
       }
+      console.log(data);
       formSchemaProduct.parse(data);
       const response = await fetch(`${baseURL}/products/${id}`, {
         method: "PUT",
@@ -176,7 +183,7 @@ export default function UpdateProduct() {
         return;
       }
 
-      toast.success("Product updated successful");
+      toast.success("Produk berhasil diperbarui");
       router.push("/product");
       router.refresh();
     } catch (e) {
@@ -192,7 +199,7 @@ export default function UpdateProduct() {
         toast.error("Kesalahan server internal!");
       }
     } finally {
-      setLoading(false);
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
@@ -203,6 +210,8 @@ export default function UpdateProduct() {
       setImage(null);
     }
   };
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -346,11 +355,14 @@ export default function UpdateProduct() {
                 <p className="text-xs text-red-500">{errors.description}</p>
               )}
             </div>
-            {loading ? (
-              <div className="flex justify-end max-w-xl">
+            {isLoading.submit ? (
+              <div className="flex justify-end max-w-xl gap-x-2">
                 <Button disabled>
                   <MoonLoader size={20} />
                   <span className="ml-2">Menyimpan</span>
+                </Button>
+                <Button variant="secondary" disabled>
+                  Kembali
                 </Button>
               </div>
             ) : (

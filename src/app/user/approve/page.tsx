@@ -25,19 +25,36 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Loading from "@/app/loading";
+import MoonLoader from "react-spinners/MoonLoader";
 
 export default function UpdateCategoryPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
 
   const getUsers = async () => {
-    const response = await fetch(`${baseURL}/user`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const { data } = await response.json();
-    setUsers(data);
+    setIsLoading({ ...isLoading, page: true });
+    try {
+      const response = await fetch(`${baseURL}/user`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        toast.error("Terjadi kesalahan pengambilan data");
+        return;
+      }
+      const { data } = await response.json();
+      setUsers(data);
+    } catch (e) {
+      toast.error("Terjadi kesalahan server internal");
+    } finally {
+      setIsLoading({ ...isLoading, page: false });
+    }
   };
 
   useEffect(() => {
@@ -50,6 +67,7 @@ export default function UpdateCategoryPage() {
     method: string
   ) => {
     event.preventDefault();
+    setIsLoading({ ...isLoading, submit: true });
     try {
       if (method === "PATCH") {
         const response = await fetch(`${baseURL}/user/approve`, {
@@ -91,10 +109,14 @@ export default function UpdateCategoryPage() {
       }
     } catch (e) {
       toast.error("Kesalahan server internal!");
+    } finally {
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
   const findUserApprove = users.filter((user) => user.approved === false);
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -114,6 +136,12 @@ export default function UpdateCategoryPage() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <div className="flex gap-x-2">
+                      isLoading.submit?(
+                      <Button disabled>
+                        <MoonLoader size={20} />
+                        <span className="ml-2">Menyimpan</span>
+                      </Button>
+                      ): (
                       <Button
                         type="submit"
                         onClick={(event) =>
@@ -123,6 +151,7 @@ export default function UpdateCategoryPage() {
                       >
                         Konfirmasi
                       </Button>
+                      )
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button variant="destructive">Hapus</Button>

@@ -28,15 +28,18 @@ import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { formSchemaQuantityProduct } from "@/validation/validation";
 import { GrUpdate } from "react-icons/gr";
+import MoonLoader from "react-spinners/MoonLoader";
 
 export default function UpdateQuantityModal({ id }: { id: number }) {
   const [quantity, setQuantity] = useState<number>(0);
   const [type, setType] = useState<string>("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleUpdate = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     try {
       const data = { quantity, type };
       formSchemaQuantityProduct.parse(data);
@@ -69,6 +72,8 @@ export default function UpdateQuantityModal({ id }: { id: number }) {
       } else {
         toast.error("Kesalahan server internal!");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,9 +119,16 @@ export default function UpdateQuantityModal({ id }: { id: number }) {
           )}
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleUpdate}>
-            Simpan
-          </Button>
+          {isLoading ? (
+            <Button disabled>
+              <MoonLoader size={20} />
+              <span className="ml-2">Menyimpan</span>
+            </Button>
+          ) : (
+            <Button type="submit" onClick={handleUpdate}>
+              Simpan
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -31,6 +31,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { formSchemaTransaction } from "@/validation/validation";
 import { Destination, Product } from "@/model/models";
+import Loading from "@/app/loading";
 
 type FormSchema = z.infer<typeof formSchemaTransaction>;
 
@@ -39,19 +40,22 @@ export default function AddTransactionPage() {
     resolver: zodResolver(formSchemaTransaction),
   });
   const { handleSubmit } = form;
-  const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [productName, setProductName] = useState<string | undefined>("");
   const [destinationName, setDestinationName] = useState<string | undefined>(
     ""
   );
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
   const productSelect = form.watch("productId");
   const destinationSelect = form.watch("destinationId");
 
   const onSubmit = async (values: FormSchema) => {
-    setLoading(true);
+    setIsLoading({ ...isLoading, submit: true });
     try {
       const response = await fetch(`${baseURL}/transaction`, {
         method: "POST",
@@ -77,30 +81,37 @@ export default function AddTransactionPage() {
     } catch (error) {
       toast.error("Terjadi kesalahan di server!");
     } finally {
-      setLoading(false);
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const [productResponse, destinationResponse] = await Promise.all([
-        fetch(`${baseURL}/products`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }),
-        fetch(`${baseURL}/destination`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }),
-      ]);
+      setIsLoading({ ...isLoading, page: true });
+      try {
+        const [productResponse, destinationResponse] = await Promise.all([
+          fetch(`${baseURL}/products`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+          fetch(`${baseURL}/destination`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+        ]);
 
-      const productsData = await productResponse.json();
-      const destinationsData = await destinationResponse.json();
+        const productsData = await productResponse.json();
+        const destinationsData = await destinationResponse.json();
 
-      setProducts(productsData.data);
-      setDestinations(destinationsData.data);
+        setProducts(productsData.data);
+        setDestinations(destinationsData.data);
+      } catch (e) {
+        toast.error("Terjadi kesalahan server internal");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
+      }
     };
     fetchAllData();
   }, []);
@@ -121,6 +132,8 @@ export default function AddTransactionPage() {
     handleNameProduct();
     handleNameDestination();
   }, [productName, destinationName]);
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -244,8 +257,8 @@ export default function AddTransactionPage() {
                   </FormItem>
                 )}
               />
-              {loading ? (
-                <div className="flex justify-end max-w-xl">
+              {isLoading.submit ? (
+                <div className="flex justify-end max-w-xl gap-x-2">
                   <Button disabled>
                     <MoonLoader size={20} />
                     <span className="ml-2">Menyimpan</span>

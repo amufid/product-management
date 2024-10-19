@@ -1,5 +1,6 @@
 "use client";
 
+import Loading from "@/app/loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { accessToken } from "@/lib/accessToken";
@@ -8,6 +9,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import MoonLoader from "react-spinners/MoonLoader";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -18,24 +20,40 @@ const formSchema = z.object({
 export default function UpdateCategoryPage() {
   const [name, setName] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState({
+    page: false,
+    submit: false,
+  });
   const router = useRouter();
   const { id } = useParams();
 
   useEffect(() => {
     const getCategory = async () => {
-      const response = await fetch(`${baseURL}/categories/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const { data } = await response.json();
-      setName(data.name);
+      setIsLoading({ ...isLoading, page: true });
+      try {
+        const response = await fetch(`${baseURL}/categories/${id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!response.ok) {
+          toast.error("Terjadi kesalahan pengambilan data");
+          return;
+        }
+        const { data } = await response.json();
+        setName(data.name);
+      } catch (e) {
+        toast.error("Terjadi kesalahan server internal");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
+      }
     };
     getCategory();
   }, []);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading({ ...isLoading, submit: true });
     try {
       const data = { name };
       formSchema.parse(data);
@@ -68,8 +86,12 @@ export default function UpdateCategoryPage() {
       } else {
         toast.error("Kesalahan server internal!");
       }
+    } finally {
+      setIsLoading({ ...isLoading, submit: false });
     }
   };
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
@@ -88,14 +110,26 @@ export default function UpdateCategoryPage() {
                 <p className="text-xs text-red-500">{errors.name}</p>
               )}
             </div>
-            <div className="flex justify-end max-w-xl gap-x-2">
-              <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">
-                Simpan
-              </Button>
-              <Link href="/category">
-                <Button variant="secondary">Kembali</Button>
-              </Link>
-            </div>
+            {isLoading.submit ? (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button disabled>
+                  <MoonLoader size={20} />
+                  <span className="ml-2">Menyimpan</span>
+                </Button>
+                <Button variant="secondary" disabled>
+                  Kembali
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-end max-w-xl gap-x-2">
+                <Button className="bg-emerald-600 hover:bg-emerald-500 text-white">
+                  Simpan
+                </Button>
+                <Link href="/category">
+                  <Button variant="secondary">Kembali</Button>
+                </Link>
+              </div>
+            )}
           </form>
         </div>
       </div>
