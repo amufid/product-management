@@ -81,24 +81,33 @@ export default function AddTransactionPage() {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const [productResponse, locationResponse] = await Promise.all([
-        fetch(`${baseURL}/products`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }),
-        fetch(`${baseURL}/location`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }),
-      ]);
-
-      const productsData = await productResponse.json();
-      const locationsData = await locationResponse.json();
-
-      setProducts(productsData.data);
-      setLocations(locationsData.data);
+      setIsLoading({ ...isLoading, page: true });
+      try {
+        const [productResponse, locationResponse] = await Promise.all([
+          fetch(`${baseURL}/products`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+          fetch(`${baseURL}/location`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }),
+        ]);
+        if (!productResponse.ok || !locationResponse.ok) {
+          toast.error("Terjadi kesalahan pengambilan data");
+          return;
+        }
+        const productsData = await productResponse.json();
+        const locationsData = await locationResponse.json();
+        setProducts(productsData.data);
+        setLocations(locationsData.data);
+      } catch (e) {
+        toast.error("Terjadi kesalahan server internal");
+      } finally {
+        setIsLoading({ ...isLoading, page: false });
+      }
     };
     fetchAllData();
   }, []);
