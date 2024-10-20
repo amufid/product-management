@@ -27,7 +27,7 @@ export default function EditTransactionPage() {
 
   useEffect(() => {
     const getTransaction = async () => {
-      setIsLoading((prev) => ({ ...prev, page: true }));
+      setIsLoading({ ...isLoading, page: true });
       try {
         const response = await fetch(`${baseURL}/transaction/${id}`, {
           headers: {
@@ -46,7 +46,7 @@ export default function EditTransactionPage() {
       } catch (e) {
         toast.error("Terjadi kesalahan server internal!");
       } finally {
-        setIsLoading((prev) => ({ ...prev, page: false }));
+        setIsLoading({ ...isLoading, page: false });
       }
     };
     getTransaction();
