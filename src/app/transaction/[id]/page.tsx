@@ -12,6 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import { formSchemaUpdateTransaction } from "@/validation/validation";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import MoonLoader from "react-spinners/MoonLoader";
+import Loading from "@/app/loading";
 
 export default function EditTransactionPage() {
   const [productName, setProductName] = useState<string>("");
@@ -109,6 +110,8 @@ export default function EditTransactionPage() {
       setIsLoading({ ...isLoading, submit: false });
     }
   };
+
+  if (isLoading.page) return <Loading />;
 
   return (
     <div className="w-full">
